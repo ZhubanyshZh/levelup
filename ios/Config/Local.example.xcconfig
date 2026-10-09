@@ -1,0 +1,12 @@
+// Скопируй в Local.xcconfig и заполни. Файл не попадает в git.
+
+// Личный Personal Team (не командный аккаунт компании).
+DEVELOPMENT_TEAM = XXXXXXXXXX
+BUNDLE_ID_PREFIX = com.yourname
+
+// Симулятор: localhost. iPhone: IP Mac в той же Wi-Fi сети, например http:/$()/192.168.1.10:8000
+API_BASE_URL = http:/$()/localhost:8000
+
+// Из Google Cloud Console → Credentials → iOS client.
+GOOGLE_CLIENT_ID = 1234567890-abcdef.apps.googleusercontent.com
+GOOGLE_REVERSED_CLIENT_ID = com.googleusercontent.apps.1234567890-abcdef

@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Secrets
+.env
+
+# Xcode (проект генерируется XcodeGen из ios/project.yml)
+ios/LevelUp.xcodeproj/
+ios/Config/Local.xcconfig
+xcuserdata/
+DerivedData/
+build/
+*.xcuserstate
+
+# Swift Package Manager
+ios/LevelUpKit/.build/
+ios/LevelUpKit/.swiftpm/
+
+# Дампы базы с сервера (личные данные)
+backups/

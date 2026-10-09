@@ -1,0 +1,2386 @@
+{
+  "sourceLanguage": "ru",
+  "strings": {
+    "#%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "#%@"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld / %lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld XP"
+          }
+        }
+      }
+    },
+    "+ Время": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Time"
+          }
+        }
+      }
+    },
+    "+ Срок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Due date"
+          }
+        }
+      }
+    },
+    "+%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%lld"
+          }
+        }
+      }
+    },
+    "+%lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%lld XP"
+          }
+        }
+      }
+    },
+    "1 — пара минут, 5 — несколько дней. Пригодится для опыта (XP).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 — a couple of minutes, 5 — several days. Used for XP."
+          }
+        }
+      }
+    },
+    "Email": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email"
+          }
+        }
+      }
+    },
+    "Gemini бесплатен в Google AI Studio, но на бесплатном тарифе Google может использовать запросы для улучшения своих моделей. Учитывай это для личных записей.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemini is free in Google AI Studio, but on the free tier Google may use your requests to improve its models. Keep that in mind for personal notes."
+          }
+        }
+      }
+    },
+    "Google не подтвердил вход. Попробуй ещё раз.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google couldn't confirm the sign-in. Please try again."
+          }
+        }
+      }
+    },
+    "Google-вход не настроен: заполни GOOGLE_CLIENT_ID в ios/Config/Local.xcconfig.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google sign-in isn't configured: set GOOGLE_CLIENT_ID in ios/Config/Local.xcconfig."
+          }
+        }
+      }
+    },
+    "Level Up работает на твоём собственном ключе ИИ. Ключ хранится на сервере в зашифрованном виде и обратно не показывается.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level Up runs on your own AI key. The key is stored encrypted on the server and is never shown back."
+          }
+        }
+      }
+    },
+    "· активный": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· active"
+          }
+        }
+      }
+    },
+    "Аккаунт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
+          }
+        }
+      }
+    },
+    "Активный помощник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active assistant"
+          }
+        }
+      }
+    },
+    "Без повтора": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No repeat"
+          }
+        }
+      }
+    },
+    "Без регистрации": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No account"
+          }
+        }
+      }
+    },
+    "Без срока": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No due date"
+          }
+        }
+      }
+    },
+    "Бесплатно: войди в Google AI Studio и нажми «Create API key».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free: sign in to Google AI Studio and tap “Create API key”."
+          }
+        }
+      }
+    },
+    "В работе": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In progress"
+          }
+        }
+      }
+    },
+    "В работу": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
+          }
+        }
+      }
+    },
+    "В это время я занят": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'm busy at this time"
+          }
+        }
+      }
+    },
+    "Важно": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Important"
+          }
+        }
+      }
+    },
+    "Вернуть в работу": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark as not done"
+          }
+        }
+      }
+    },
+    "Вернуться в аккаунт без регистрации можно только с этого iPhone.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can return to an account without registration only from this iPhone."
+          }
+        }
+      }
+    },
+    "Версия %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@"
+          }
+        }
+      }
+    },
+    "Вид": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View"
+          }
+        }
+      }
+    },
+    "Виджеты (App Group)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widgets (App Group)"
+          }
+        }
+      }
+    },
+    "Во «Входящих»: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Inbox: %lld"
+          }
+        }
+      }
+    },
+    "Войти через Google": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with Google"
+          }
+        }
+      }
+    },
+    "Вопрос": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Question"
+          }
+        }
+      }
+    },
+    "Время": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
+          }
+        }
+      }
+    },
+    "Всего %lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld XP total"
+          }
+        }
+      }
+    },
+    "Вставь API-ключ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste API key"
+          }
+        }
+      }
+    },
+    "Вставь ключ, чтобы подключить провайдера.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste a key to connect the provider."
+          }
+        }
+      }
+    },
+    "Всё разложено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All sorted"
+          }
+        }
+      }
+    },
+    "Вход": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign-in"
+          }
+        }
+      }
+    },
+    "Вход через Google не настроен на сервере.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google sign-in isn't configured on the server."
+          }
+        }
+      }
+    },
+    "Входящие": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inbox"
+          }
+        }
+      }
+    },
+    "Вчера": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yesterday"
+          }
+        }
+      }
+    },
+    "Выбранная модель недоступна — выбери другую в настройках.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The selected model is unavailable — pick another one in settings."
+          }
+        }
+      }
+    },
+    "Выйти": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out"
+          }
+        }
+      }
+    },
+    "Выйти из аккаунта?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out?"
+          }
+        }
+      }
+    },
+    "Выполненная повторяющаяся задача переезжает на следующий раз.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When you complete a repeating task, it moves to its next date."
+          }
+        }
+      }
+    },
+    "Высокий": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High"
+          }
+        }
+      }
+    },
+    "Где взять ключ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get a key"
+          }
+        }
+      }
+    },
+    "Говорить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speak"
+          }
+        }
+      }
+    },
+    "Голосовой ввод": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voice input"
+          }
+        }
+      }
+    },
+    "Готово": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Данные будут привязаны к этому iPhone. Google можно подключить позже — ничего не потеряется.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your data stays on this iPhone's account. You can connect Google later without losing anything."
+          }
+        }
+      }
+    },
+    "Дата": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date"
+          }
+        }
+      }
+    },
+    "Дневник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal"
+          }
+        }
+      }
+    },
+    "Дневник пуст": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal is empty"
+          }
+        }
+      }
+    },
+    "До": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To"
+          }
+        }
+      }
+    },
+    "До уровня %lld: %lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To level %lld: %lld XP"
+          }
+        }
+      }
+    },
+    "Добавить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        }
+      }
+    },
+    "Добавить продукт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add an item"
+          }
+        }
+      }
+    },
+    "Доска": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Board"
+          }
+        }
+      }
+    },
+    "Доход": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Income"
+          }
+        }
+      }
+    },
+    "Ещё": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More"
+          }
+        }
+      }
+    },
+    "Ждут интернета": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for internet"
+          }
+        }
+      }
+    },
+    "Ждёт подтверждения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for confirmation"
+          }
+        }
+      }
+    },
+    "Ждёт появления раздела": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for its section"
+          }
+        }
+      }
+    },
+    "Завтра": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tomorrow"
+          }
+        }
+      }
+    },
+    "Задач пока нет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No tasks yet"
+          }
+        }
+      }
+    },
+    "Задач: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasks: %lld"
+          }
+        }
+      }
+    },
+    "Задача": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Task"
+          }
+        }
+      }
+    },
+    "Задача: 5–30 XP — чем сложнее, тем больше": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Task: 5–30 XP — harder tasks give more"
+          }
+        }
+      }
+    },
+    "Задачи": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasks"
+          }
+        }
+      }
+    },
+    "Задачи на это время ИИ будет отмечать как пересечение.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI will flag tasks at this time as a conflict."
+          }
+        }
+      }
+    },
+    "Задачи, дневник, цели и финансы — голосом, в одном месте.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasks, journal, goals and money — by voice, in one place."
+          }
+        }
+      }
+    },
+    "Закрыть": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "Заменить ключ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace key"
+          }
+        }
+      }
+    },
+    "Заметка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note"
+          }
+        }
+      }
+    },
+    "Записать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture"
+          }
+        }
+      }
+    },
+    "Записей в дневнике: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal entries: %lld"
+          }
+        }
+      }
+    },
+    "Запись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entry"
+          }
+        }
+      }
+    },
+    "Запись в дневнике: 15 XP в день": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal entry: 15 XP a day"
+          }
+        }
+      }
+    },
+    "Запись уже обработана.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This entry has already been processed."
+          }
+        }
+      }
+    },
+    "Здоровье и питание": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Health & diet"
+          }
+        }
+      }
+    },
+    "ИИ будет учитывать это при планировании.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI will take this into account when planning."
+          }
+        }
+      }
+    },
+    "ИИ и голос": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI & voice"
+          }
+        }
+      }
+    },
+    "ИИ не настроен — добавь ключ в «Ещё → ИИ-помощник».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI isn't set up — add a key in More → AI assistant."
+          }
+        }
+      }
+    },
+    "ИИ не нашёл здесь ни задач, ни фактов. Нажми «Сохранить», чтобы убрать запись из «Входящих».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI found no tasks or facts here. Tap Save to remove the entry from Inbox."
+          }
+        }
+      }
+    },
+    "ИИ сейчас не ответил. Попробуй ещё раз чуть позже.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI didn't respond. Try again a bit later."
+          }
+        }
+      }
+    },
+    "ИИ учитывает это при каждой записи. Факт можно добавить и голосом: «Запомни, что по пятницам с 12:30 до 14:00 у меня жума».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI considers this with every entry. You can add a fact by voice too: “Remember that on Fridays from 12:30 to 14:00 I have Jumu'ah.”"
+          }
+        }
+      }
+    },
+    "ИИ-помощник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI assistant"
+          }
+        }
+      }
+    },
+    "Исходный текст": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Original text"
+          }
+        }
+      }
+    },
+    "Каждую неделю": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every week"
+          }
+        }
+      }
+    },
+    "Каждую неделю: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every week: %@"
+          }
+        }
+      }
+    },
+    "Каждый день": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every day"
+          }
+        }
+      }
+    },
+    "Каждый месяц": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every month"
+          }
+        }
+      }
+    },
+    "Каждый месяц, %lld-го": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monthly, on day %lld"
+          }
+        }
+      }
+    },
+    "Как получить опыт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to earn XP"
+          }
+        }
+      }
+    },
+    "Как проходит день? Запиши пару слов — +15 XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How's your day going? Write a few words — +15 XP"
+          }
+        }
+      }
+    },
+    "Как проходит день? Пара слов — и +15 XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How's your day going? A few words — and +15 XP"
+          }
+        }
+      }
+    },
+    "Ключ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key"
+          }
+        }
+      }
+    },
+    "Ключ ИИ не подходит — проверь его в настройках.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The AI key doesn't work — check it in settings."
+          }
+        }
+      }
+    },
+    "Купить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To buy"
+          }
+        }
+      }
+    },
+    "Купить: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To buy: %lld"
+          }
+        }
+      }
+    },
+    "Куплено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bought"
+          }
+        }
+      }
+    },
+    "Личное": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personal"
+          }
+        }
+      }
+    },
+    "Мелкие задачи приносят опыт до 10 раз в день": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small tasks give XP up to 10 times a day"
+          }
+        }
+      }
+    },
+    "Модели нет — выбери другую": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model missing — pick another"
+          }
+        }
+      }
+    },
+    "Модель": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model"
+          }
+        }
+      }
+    },
+    "На сегодня ничего. Нажми, чтобы записать дела голосом.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing for today. Tap to add things by voice."
+          }
+        }
+      }
+    },
+    "Нажми «Записать» и надиктуй дела — или добавь задачу кнопкой «+».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap Capture and dictate your to-dos — or add a task with the + button."
+          }
+        }
+      }
+    },
+    "Нажми на микрофон и говори": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the mic and speak"
+          }
+        }
+      }
+    },
+    "Название": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
+          }
+        }
+      }
+    },
+    "Напоминание из Level Up": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminder from Level Up"
+          }
+        }
+      }
+    },
+    "Напомнить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind me"
+          }
+        }
+      }
+    },
+    "Например: работаю с 9 до 18": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For example: I work 9 to 6"
+          }
+        }
+      }
+    },
+    "Настроение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mood"
+          }
+        }
+      }
+    },
+    "Настроение за 2 недели": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mood over 2 weeks"
+          }
+        }
+      }
+    },
+    "Настроить ИИ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set up AI"
+          }
+        }
+      }
+    },
+    "Не настроен": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not set up"
+          }
+        }
+      }
+    },
+    "Не сохранять": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don't save"
+          }
+        }
+      }
+    },
+    "Не удалось включить микрофон.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't turn on the microphone."
+          }
+        }
+      }
+    },
+    "Не удалось загрузить профиль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't load your profile"
+          }
+        }
+      }
+    },
+    "Недавно": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent"
+          }
+        }
+      }
+    },
+    "Недоступно": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unavailable"
+          }
+        }
+      }
+    },
+    "Нет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None"
+          }
+        }
+      }
+    },
+    "Нет связи с сервером. Запись отправится сама, когда появится интернет.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't reach the server. The entry will be sent automatically once you're online."
+          }
+        }
+      }
+    },
+    "Нет связи с сервером. Проверь интернет и попробуй ещё раз.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't reach the server. Check your connection and try again."
+          }
+        }
+      }
+    },
+    "Низкий": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low"
+          }
+        }
+      }
+    },
+    "Ничего не добавлено.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing added."
+          }
+        }
+      }
+    },
+    "Новая задача": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New task"
+          }
+        }
+      }
+    },
+    "Новая запись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New entry"
+          }
+        }
+      }
+    },
+    "Новый уровень!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level up!"
+          }
+        }
+      }
+    },
+    "Новый факт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New fact"
+          }
+        }
+      }
+    },
+    "Нормально": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okay"
+          }
+        }
+      }
+    },
+    "Обо мне": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About me"
+          }
+        }
+      }
+    },
+    "Обычный": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal"
+          }
+        }
+      }
+    },
+    "Остановить запись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop recording"
+          }
+        }
+      }
+    },
+    "Отлично": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Great"
+          }
+        }
+      }
+    },
+    "Отмена": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Отметить выполненной": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark as done"
+          }
+        }
+      }
+    },
+    "Отправить сейчас": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send now"
+          }
+        }
+      }
+    },
+    "Очень плохо": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Very bad"
+          }
+        }
+      }
+    },
+    "Перенести на %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move to %@"
+          }
+        }
+      }
+    },
+    "Пересекается: «%@» %@–%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conflicts with “%@” %@–%@"
+          }
+        }
+      }
+    },
+    "Перетащи сюда карточку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag a card here"
+          }
+        }
+      }
+    },
+    "Платно: ключ создаётся на platform.openai.com, нужен баланс на счёте.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paid: create a key at platform.openai.com; your account needs a balance."
+          }
+        }
+      }
+    },
+    "Плохо": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bad"
+          }
+        }
+      }
+    },
+    "Повтор": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat"
+          }
+        }
+      }
+    },
+    "Повторить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retry"
+          }
+        }
+      }
+    },
+    "Повторяется": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats"
+          }
+        }
+      }
+    },
+    "Подключить Google": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect Google"
+          }
+        }
+      }
+    },
+    "Позже": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Later"
+          }
+        }
+      }
+    },
+    "Пока ничего": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing yet"
+          }
+        }
+      }
+    },
+    "Покупки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shopping"
+          }
+        }
+      }
+    },
+    "Покупок: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shopping items: %lld"
+          }
+        }
+      }
+    },
+    "Предпочтения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferences"
+          }
+        }
+      }
+    },
+    "Привет!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hi!"
+          }
+        }
+      }
+    },
+    "Привет, %@!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hi, %@!"
+          }
+        }
+      }
+    },
+    "Приоритет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority"
+          }
+        }
+      }
+    },
+    "Проверить ключ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check key"
+          }
+        }
+      }
+    },
+    "Проверка связи": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diagnostics"
+          }
+        }
+      }
+    },
+    "Проверь": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review"
+          }
+        }
+      }
+    },
+    "Прогресс": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress"
+          }
+        }
+      }
+    },
+    "Продолжить без регистрации": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue without an account"
+          }
+        }
+      }
+    },
+    "Просрочено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overdue"
+          }
+        }
+      }
+    },
+    "Работает": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Working"
+          }
+        }
+      }
+    },
+    "Разбираю…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sorting it out…"
+          }
+        }
+      }
+    },
+    "Раздел": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Section"
+          }
+        }
+      }
+    },
+    "Разобрать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort it out"
+          }
+        }
+      }
+    },
+    "Разобрать снова": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
+    "Разреши доступ к микрофону: Настройки → Level Up.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow microphone access: Settings → Level Up."
+          }
+        }
+      }
+    },
+    "Разреши распознавание речи: Настройки → Level Up.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow speech recognition: Settings → Level Up."
+          }
+        }
+      }
+    },
+    "Распознавание речи сейчас недоступно. Попробуй написать текстом.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speech recognition is unavailable right now. Try typing instead."
+          }
+        }
+      }
+    },
+    "Распорядок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routine"
+          }
+        }
+      }
+    },
+    "Расскажи о своём распорядке и привычках — планы станут точнее.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tell about your routine and habits — plans will get more accurate."
+          }
+        }
+      }
+    },
+    "Расскажи, как прошёл день, — голосом через «Записать» или кнопкой «+».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tell how your day went — by voice with Capture or with the + button."
+          }
+        }
+      }
+    },
+    "Регулярное время": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recurring time"
+          }
+        }
+      }
+    },
+    "С": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From"
+          }
+        }
+      }
+    },
+    "С напоминанием": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With reminder"
+          }
+        }
+      }
+    },
+    "Сделать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To do"
+          }
+        }
+      }
+    },
+    "Сегодня": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        }
+      }
+    },
+    "Сегодня +%lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today +%lld XP"
+          }
+        }
+      }
+    },
+    "Сейчас аккаунт привязан только к этому iPhone. С Google данные не потеряются при смене телефона.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Right now your account is tied to this iPhone only. With Google, you won't lose data when you switch phones."
+          }
+        }
+      }
+    },
+    "Сервер": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
+        }
+      }
+    },
+    "Сессия завершилась. Войди снова.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your session has ended. Please sign in again."
+          }
+        }
+      }
+    },
+    "Скажи «купить молоко и хлеб» в «Записать» или добавь вручную.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Say “buy milk and bread” in Capture or add items manually."
+          }
+        }
+      }
+    },
+    "Скажи или напиши что угодно: дела, мысли, «запомни, что…». ИИ сам разложит по местам.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Say or type anything: to-dos, thoughts, “remember that…”. AI will sort it out."
+          }
+        }
+      }
+    },
+    "Слишком много запросов к ИИ — попробуй через минуту.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many AI requests — try again in a minute."
+          }
+        }
+      }
+    },
+    "Сложность": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Difficulty"
+          }
+        }
+      }
+    },
+    "Слушаю… Нажми ■, когда закончишь.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listening… Tap ■ when you're done."
+          }
+        }
+      }
+    },
+    "Сохранено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved"
+          }
+        }
+      }
+    },
+    "Сохранено во «Входящих»": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved to Inbox"
+          }
+        }
+      }
+    },
+    "Сохранено на телефоне": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved on this phone"
+          }
+        }
+      }
+    },
+    "Сохранить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "Сохранить (%lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save (%lld)"
+          }
+        }
+      }
+    },
+    "Сохранить ключ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save key"
+          }
+        }
+      }
+    },
+    "Список": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List"
+          }
+        }
+      }
+    },
+    "Список пуст": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The list is empty"
+          }
+        }
+      }
+    },
+    "Срок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due"
+          }
+        }
+      }
+    },
+    "Статус": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
+        }
+      }
+    },
+    "Сюда попадают записи, которые ИИ не смог разобрать или которые ждут подтверждения.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries that AI couldn't process or that are waiting for confirmation end up here."
+          }
+        }
+      }
+    },
+    "Так держать — каждый шаг считается.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep it up — every step counts."
+          }
+        }
+      }
+    },
+    "Теги": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tags"
+          }
+        }
+      }
+    },
+    "Трата": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expense"
+          }
+        }
+      }
+    },
+    "Тренировка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workout"
+          }
+        }
+      }
+    },
+    "У провайдера ИИ закончилась квота или баланс.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The AI provider's quota or balance has run out."
+          }
+        }
+      }
+    },
+    "Убрать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "Убрать из «Входящих»": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from Inbox"
+          }
+        }
+      }
+    },
+    "Убрать из списка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from list"
+          }
+        }
+      }
+    },
+    "Убрать купленное": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear bought items"
+          }
+        }
+      }
+    },
+    "Убрать срок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove due date"
+          }
+        }
+      }
+    },
+    "Удалить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "Удалить задачу": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete task"
+          }
+        }
+      }
+    },
+    "Удалить задачу?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete task?"
+          }
+        }
+      }
+    },
+    "Удалить запись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete entry"
+          }
+        }
+      }
+    },
+    "Удалить запись?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete entry?"
+          }
+        }
+      }
+    },
+    "Удалить ключ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete key"
+          }
+        }
+      }
+    },
+    "Уровень": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level"
+          }
+        }
+      }
+    },
+    "Уровень %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %lld"
+          }
+        }
+      }
+    },
+    "Факт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fact"
+          }
+        }
+      }
+    },
+    "Факт о тебе": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fact about you"
+          }
+        }
+      }
+    },
+    "Фактов о тебе: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facts about you: %lld"
+          }
+        }
+      }
+    },
+    "Финансы": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finance"
+          }
+        }
+      }
+    },
+    "Фокус и ценности": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus & values"
+          }
+        }
+      }
+    },
+    "Хорошо": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good"
+          }
+        }
+      }
+    },
+    "Цель": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Goal"
+          }
+        }
+      }
+    },
+    "Часовой пояс": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time zone"
+          }
+        }
+      }
+    },
+    "Через запятую.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separated by commas."
+          }
+        }
+      }
+    },
+    "Что было сегодня? Что получилось, что нет, что чувствуешь?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What happened today? What worked, what didn't, how do you feel?"
+          }
+        }
+      }
+    },
+    "Что сделать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What to do"
+          }
+        }
+      }
+    },
+    "Что-то пошло не так. Попробуй ещё раз.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong. Please try again."
+          }
+        }
+      }
+    },
+    "Энергия": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energy"
+          }
+        }
+      }
+    },
+    "Энергия %lld из 5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energy %lld of 5"
+          }
+        }
+      }
+    },
+    "Эти записи появятся в своих разделах, когда разделы будут готовы. Пока они ждут здесь.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These entries will move to their sections once those sections are ready. For now they wait here."
+          }
+        }
+      }
+    },
+    "Этот Google-аккаунт уже привязан к другому профилю Level Up.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This Google account is already linked to another Level Up profile."
+          }
+        }
+      }
+    },
+    "Этот раздел появится позже — запись подождёт во «Входящих».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This section is coming later — the entry will wait in Inbox."
+          }
+        }
+      }
+    },
+    "ждут во «Входящих»: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "waiting in Inbox: %lld"
+          }
+        }
+      }
+    },
+    "занят": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "busy"
+          }
+        }
+      }
+    },
+    "работа, спорт, семья": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "work, sport, family"
+          }
+        }
+      }
+    },
+    "—": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "—"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

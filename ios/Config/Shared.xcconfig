@@ -1,0 +1,15 @@
+// Значения по умолчанию. Личные значения задаются в Local.xcconfig (его нет в git),
+// шаблон — Local.example.xcconfig.
+
+BUNDLE_ID_PREFIX = com.example
+DEVELOPMENT_TEAM =
+APP_GROUP_ID = group.$(BUNDLE_ID_PREFIX).levelup
+
+// В xcconfig «//» начинает комментарий, поэтому слеши разделены через $().
+API_BASE_URL = http:/$()/localhost:8000
+
+// Google Sign-In: iOS-клиент из Google Cloud Console.
+GOOGLE_CLIENT_ID =
+GOOGLE_REVERSED_CLIENT_ID = com.googleusercontent.apps.not-configured
+
+#include? "Local.xcconfig"

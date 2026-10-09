@@ -1,0 +1,76 @@
+{
+  "sourceLanguage": "ru",
+  "strings": {
+    "%lld / %lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld XP"
+          }
+        }
+      }
+    },
+    "Войди в приложение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the app to sign in"
+          }
+        }
+      }
+    },
+    "Нет доступа к данным приложения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't access app data"
+          }
+        }
+      }
+    },
+    "Твой уровень и опыт.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your level and XP."
+          }
+        }
+      }
+    },
+    "Ур": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lv"
+          }
+        }
+      }
+    },
+    "Ур. %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lv. %lld"
+          }
+        }
+      }
+    },
+    "Уровень": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

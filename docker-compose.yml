@@ -1,0 +1,35 @@
+name: levelup
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: levelup
+      POSTGRES_PASSWORD: levelup
+      POSTGRES_DB: levelup
+    ports:
+      # 5432 на этой машине уже занят другим проектом.
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U levelup -d levelup"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./backend
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+asyncpg://levelup:levelup@db:5432/levelup
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
