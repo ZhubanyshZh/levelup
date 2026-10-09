@@ -88,6 +88,22 @@ struct LevelUpShortcuts: AppShortcutsProvider {
             systemImageName: "text.badge.plus"
         )
         AppShortcut(
+            intent: OpenExpenseCaptureIntent(),
+            phrases: [
+                "Запиши трату в \(.applicationName)",
+            ],
+            shortTitle: "Трата",
+            systemImageName: "creditcard"
+        )
+        AppShortcut(
+            intent: OpenWorkoutIntent(),
+            phrases: [
+                "Начни тренировку в \(.applicationName)",
+            ],
+            shortTitle: "Тренировка",
+            systemImageName: "figure.strengthtraining.traditional"
+        )
+        AppShortcut(
             intent: OpenJournalEntryIntent(),
             phrases: [
                 "Дневник в \(.applicationName)",
@@ -124,6 +140,15 @@ enum CaptureSummary {
         }
         if !result.shopping.isEmpty {
             parts.append(String(localized: "Покупок: \(result.shopping.count)"))
+        }
+        if !result.transactions.isEmpty {
+            parts.append(String(localized: "Операций: \(result.transactions.count)"))
+        }
+        if !result.workouts.isEmpty {
+            parts.append(String(localized: "Тренировок: \(result.workouts.count)"))
+        }
+        if !result.goals.isEmpty {
+            parts.append(String(localized: "Целей: \(result.goals.count)"))
         }
         if result.xpGained > 0 {
             parts.append("+\(result.xpGained) XP")

@@ -10,6 +10,54 @@ struct MoreView: View {
             List {
                 Section {
                     NavigationLink {
+                        GoalsView()
+                    } label: {
+                        LabeledContent {
+                            if !store.goals.active.isEmpty {
+                                Text(store.goals.active.count, format: .number)
+                            }
+                        } label: {
+                            Label("Цели", systemImage: "flag")
+                        }
+                    }
+                    NavigationLink {
+                        FinanceView()
+                    } label: {
+                        LabeledContent {
+                            if let summary = store.finance.summary, store.finance.isCurrentMonth, summary.spent > 0 {
+                                Text(Money.short(summary.spent, currency: summary.currency))
+                            }
+                        } label: {
+                            Label("Финансы", systemImage: "creditcard")
+                        }
+                    }
+                    NavigationLink {
+                        WorkoutsView()
+                    } label: {
+                        LabeledContent {
+                            if store.workouts.active != nil {
+                                Text("идёт")
+                                    .foregroundStyle(.tint)
+                            } else if !store.workouts.thisWeek.isEmpty {
+                                Text(store.workouts.thisWeek.count, format: .number)
+                            }
+                        } label: {
+                            Label("Тренировки", systemImage: "figure.strengthtraining.traditional")
+                        }
+                    }
+                    NavigationLink {
+                        ProgressDetailView()
+                    } label: {
+                        LabeledContent {
+                            Text("Ур. \(store.progress.progress.level)")
+                        } label: {
+                            Label("Прогресс", systemImage: "star")
+                        }
+                    }
+                }
+
+                Section {
+                    NavigationLink {
                         ShoppingView()
                     } label: {
                         LabeledContent {

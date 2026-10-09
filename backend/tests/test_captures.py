@@ -212,3 +212,105 @@ def test_normalize_drops_broken_schedule_but_keeps_fact() -> None:
     assert item.schedule is None
     assert item.fact_category == "personal"
     assert item.remind is False
+
+
+# --- Финансы, тренировки, цели (этап 4) ---
+
+
+def _bench(**extra) -> dict:
+    return {
+        "name": "Жим лёжа",
+        "sets": 3,
+        "reps": 5,
+        "weight_kg": 80,
+        "duration_sec": None,
+        "distance_m": None,
+        **extra,
+    }
+
+
+async def test_money_workout_and_goal_are_saved(client: AsyncClient, fake_ai: FakeAI) -> None:
+    tokens = await sign_in_device(client)
+    await configure_ai(client, tokens)
+    fake_ai.respond(
+        parsed("expense", "Такси", amount=3500, category="transport"),
+        parsed("income", "Зарплата", amount=450000, category="salary"),
+        parsed("workout", "Силовая", exercises=[_bench()]),
+        parsed("goal", "Пробежать 10 км", target_value=10, metric_unit="км", sphere="body"),
+    )
+
+    result = await _capture(client, tokens, "...", autosave=True)
+
+    assert result["capture"]["status"] == "confirmed"
+    assert [(t["kind"], t["amount"], t["category"]) for t in result["transactions"]] == [
+        ("expense", 3500.0, "transport"),
+        ("income", 450000.0, "salary"),
+    ]
+    sets = result["workouts"][0]["sets"]
+    assert [(s["exercise"], s["weight_kg"], s["reps"]) for s in sets] == [("Жим лёжа", 80, 5)] * 3
+    assert result["xp_gained"] == 25
+    goal = result["goals"][0]
+    assert (goal["target_value"], goal["metric_unit"], goal["sphere"]) == (10, "км", "body")
+    call = fake_ai.calls[0]
+    assert "User's currency: KZT" in call["instructions"]
+    assert "body (Тело)" in call["instructions"]
+
+
+async def test_expense_without_amount_waits_in_inbox(client: AsyncClient, fake_ai: FakeAI) -> None:
+    tokens = await sign_in_device(client)
+    await configure_ai(client, tokens)
+    fake_ai.respond(parsed("expense", "Такси"))
+
+    result = await _capture(client, tokens, "потратил на такси", autosave=True)
+
+    assert result["capture"]["status"] == "deferred"
+    assert result["transactions"] == []
+
+
+async def test_undo_removes_money_and_workout_xp(client: AsyncClient, fake_ai: FakeAI) -> None:
+    tokens = await sign_in_device(client)
+    await configure_ai(client, tokens)
+    fake_ai.respond(
+        parsed("expense", "Кофе", amount=1500, category="cafe"),
+        parsed(
+            "workout",
+            "Бег",
+            exercises=[_bench(name="Бег", reps=None, weight_kg=None, sets=1, distance_m=5000)],
+        ),
+    )
+    capture = (await _capture(client, tokens, "...", autosave=True))["capture"]
+
+    await client.post(f"/captures/{capture['id']}/undo", headers=bearer(tokens))
+
+    summary = (await client.get("/finance/summary", headers=bearer(tokens))).json()
+    workouts = (await client.get("/workouts", headers=bearer(tokens))).json()
+    progress = (await client.get("/progress", headers=bearer(tokens))).json()
+    assert summary["spent"] == 0
+    assert workouts == []
+    assert "workout" not in [e["source_type"] for e in progress["recent"]]
+
+
+def test_normalize_money_and_exercises() -> None:
+    item = normalize_item(
+        parsed(
+            "expense",
+            "Кофе",
+            amount=-5,
+            currency="рубли",
+            category="salary",
+        )
+    )
+    assert (item.amount, item.currency, item.category) == (None, None, "other")
+
+    workout = normalize_item(
+        parsed(
+            "workout",
+            "Зал",
+            exercises=[
+                _bench(sets=0, weight_kg=5000),
+                {**_bench(), "name": "  "},
+            ],
+        )
+    )
+    assert len(workout.exercises) == 1
+    assert (workout.exercises[0].sets, workout.exercises[0].weight_kg) == (1, None)

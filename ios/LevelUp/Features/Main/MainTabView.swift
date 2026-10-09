@@ -10,6 +10,11 @@ enum MainSheet: Identifiable, Hashable {
     case capture(AppRoute.CaptureMode)
     case journalEntry
     case shopping
+    case finance
+    case workout
+    case goals
+    case goal(UUID)
+    case progress
 
     var id: Self { self }
 }
@@ -54,14 +59,17 @@ struct MainTabView: View {
             case .journalEntry:
                 JournalEditorView(entry: nil)
             case .shopping:
-                NavigationStack {
-                    ShoppingView()
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button("Готово") { self.sheet = nil }
-                            }
-                        }
-                }
+                closable { ShoppingView() }
+            case .finance:
+                closable { FinanceView() }
+            case .workout:
+                ActiveWorkoutView()
+            case .goals:
+                closable { GoalsView() }
+            case .goal(let id):
+                closable { GoalDetailView(goalID: id) }
+            case .progress:
+                closable { ProgressDetailView() }
             }
         }
         .overlay(alignment: .top) {
@@ -71,6 +79,20 @@ struct MainTabView: View {
             }
         }
         .animation(.spring(duration: 0.4), value: store.progress.lastGain)
+        .overlay(alignment: .top) {
+            // Пока открыт лист, плашку не видно — показываем, когда он закрыт.
+            if let achievement = store.progress.newAchievement, sheet == nil, store.workouts.lastResult == nil {
+                AchievementToast(achievement: achievement)
+                    .padding(.top, 56)
+                    .onTapGesture { store.progress.dismissAchievement() }
+                    .task {
+                        try? await Task.sleep(for: .seconds(3.5))
+                        store.progress.dismissAchievement()
+                    }
+            }
+        }
+        .animation(.spring(duration: 0.4), value: store.progress.newAchievement)
+        .sensoryFeedback(.success, trigger: store.progress.newAchievement)
         .overlay {
             if let level = store.progress.celebratedLevel {
                 LevelUpCelebration(level: level) { store.progress.dismissCelebration() }
@@ -103,6 +125,29 @@ struct MainTabView: View {
         case .today:
             sheet = nil
             selection = .today
+        case .finance:
+            present(.finance)
+        case .workout:
+            if store.workouts.active == nil { store.workouts.start() }
+            present(.workout)
+        case .goals:
+            present(.goals)
+        case .goal(let id):
+            present(.goal(id))
+        case .progress:
+            present(.progress)
+        }
+    }
+
+    /// Раздел из «Ещё», открытый поверх вкладок, с кнопкой «Готово».
+    private func closable(@ViewBuilder _ content: () -> some View) -> some View {
+        NavigationStack {
+            content()
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Готово") { sheet = nil }
+                    }
+                }
         }
     }
 

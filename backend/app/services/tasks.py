@@ -12,7 +12,7 @@ from app.core.time import utcnow
 from app.models import ProfileFact, Task, User
 from app.schemas.common import parse_hhmm
 from app.schemas.task import TaskCreate, TaskOut
-from app.services import recurrence, xp
+from app.services import goals, recurrence, spheres, xp
 from app.services.profile import list_facts
 from app.services.schedule import compute_remind_at, upcoming_reminders
 
@@ -100,8 +100,25 @@ def present(task: Task, timezone: str, facts: Sequence[ProfileFact], now) -> Tas
     return out
 
 
+async def check_links(db: AsyncSession, user: User, changes: dict[str, Any]) -> None:
+    """Сфера и цель задачи должны принадлежать пользователю."""
+    if changes.get("sphere") and await spheres.valid_key(db, user, changes["sphere"]) is None:
+        raise AppError("sphere_not_found", status_code=422)
+    if changes.get("goal_id"):
+        await goals.get_goal(db, user.id, changes["goal_id"])
+
+
 def _apply_fields(task: Task, changes: dict[str, Any], user: User) -> None:
-    for field in ("title", "notes", "priority", "difficulty", "due_date", "remind"):
+    for field in (
+        "title",
+        "notes",
+        "priority",
+        "difficulty",
+        "due_date",
+        "remind",
+        "sphere",
+        "goal_id",
+    ):
         if field in changes:
             setattr(task, field, changes[field])
     if "due_time" in changes:

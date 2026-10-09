@@ -107,6 +107,7 @@ public struct XPEvent: Codable, Sendable, Hashable {
     public var sourceType: String
     public var amount: Int
     public var title: String
+    public var sphere: String?
     public var createdAt: Date
 }
 
@@ -117,17 +118,45 @@ public struct LevelProgress: Codable, Sendable, Hashable {
     public var totalXp: Int
     public var todayXp: Int
     public var recent: [XPEvent]
+    public var spheres: [Sphere]
+    /// Дней подряд с опытом; один пропуск серию не рвёт.
+    public var streakDays: Int
+    public var quests: [Quest]
+    /// Весь каталог по порядку; у неполученных achievedAt = nil.
+    public var achievements: [Achievement]
 
     public static let initial = LevelProgress(
         level: 1, xpInLevel: 0, xpForNextLevel: 100, totalXp: 0, todayXp: 0, recent: []
     )
 
-    public init(level: Int, xpInLevel: Int, xpForNextLevel: Int, totalXp: Int, todayXp: Int, recent: [XPEvent]) {
+    public init(
+        level: Int, xpInLevel: Int, xpForNextLevel: Int, totalXp: Int, todayXp: Int, recent: [XPEvent],
+        spheres: [Sphere] = [], streakDays: Int = 0, quests: [Quest] = [], achievements: [Achievement] = []
+    ) {
         self.level = level
         self.xpInLevel = xpInLevel
         self.xpForNextLevel = xpForNextLevel
         self.totalXp = totalXp
         self.todayXp = todayXp
         self.recent = recent
+        self.spheres = spheres
+        self.streakDays = streakDays
+        self.quests = quests
+        self.achievements = achievements
+    }
+
+    // Ответ сервера этапа 2 и кэш старой версии читаются: новых полей в них нет.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        level = try c.decode(Int.self, forKey: .level)
+        xpInLevel = try c.decode(Int.self, forKey: .xpInLevel)
+        xpForNextLevel = try c.decode(Int.self, forKey: .xpForNextLevel)
+        totalXp = try c.decode(Int.self, forKey: .totalXp)
+        todayXp = try c.decode(Int.self, forKey: .todayXp)
+        recent = try c.decode([XPEvent].self, forKey: .recent)
+        spheres = try c.decodeIfPresent([Sphere].self, forKey: .spheres) ?? []
+        streakDays = try c.decodeIfPresent(Int.self, forKey: .streakDays) ?? 0
+        quests = try c.decodeIfPresent([Quest].self, forKey: .quests) ?? []
+        achievements = try c.decodeIfPresent([Achievement].self, forKey: .achievements) ?? []
     }
 }

@@ -42,6 +42,9 @@ public struct TaskItem: Codable, Sendable, Identifiable, Hashable {
     public var reminders: [Date]
     public var recurrence: Recurrence?
     public var difficulty: Int?
+    /// Сфера жизни, в которую идёт опыт за задачу.
+    public var sphere: String?
+    public var goalId: UUID?
     public var position: Double
     public var completedAt: Date?
     public var captureId: UUID?
@@ -62,6 +65,8 @@ public struct TaskDraft: Encodable, Sendable {
     public var remind: Bool
     public var difficulty: Int?
     public var recurrence: Recurrence?
+    public var sphere: String?
+    public var goalId: UUID?
 
     public init(
         title: String,
@@ -72,7 +77,9 @@ public struct TaskDraft: Encodable, Sendable {
         dueTime: String? = nil,
         remind: Bool = false,
         difficulty: Int? = nil,
-        recurrence: Recurrence? = nil
+        recurrence: Recurrence? = nil,
+        sphere: String? = nil,
+        goalId: UUID? = nil
     ) {
         self.title = title
         self.notes = notes
@@ -83,6 +90,8 @@ public struct TaskDraft: Encodable, Sendable {
         self.remind = remind
         self.difficulty = difficulty
         self.recurrence = recurrence
+        self.sphere = sphere
+        self.goalId = goalId
     }
 }
 
@@ -98,6 +107,8 @@ public struct TaskUpdate: Encodable, Sendable {
     public var remind: Bool
     public var difficulty: Int?
     public var recurrence: Recurrence?
+    public var sphere: String?
+    public var goalId: UUID?
     public var position: Double
 
     public init(_ task: TaskItem) {
@@ -110,11 +121,13 @@ public struct TaskUpdate: Encodable, Sendable {
         remind = task.remind
         difficulty = task.difficulty
         recurrence = task.recurrence
+        sphere = task.sphere
+        goalId = task.goalId
         position = task.position
     }
 
     private enum CodingKeys: String, CodingKey {
-        case title, notes, status, priority, dueDate, dueTime, remind, difficulty, recurrence, position
+        case title, notes, status, priority, dueDate, dueTime, remind, difficulty, recurrence, sphere, goalId, position
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -128,6 +141,8 @@ public struct TaskUpdate: Encodable, Sendable {
         try container.encode(remind, forKey: .remind)
         try container.encode(difficulty, forKey: .difficulty)
         try container.encode(recurrence, forKey: .recurrence)
+        try container.encode(sphere, forKey: .sphere)
+        try container.encode(goalId, forKey: .goalId)
         try container.encode(position, forKey: .position)
     }
 }

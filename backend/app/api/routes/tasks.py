@@ -18,6 +18,7 @@ async def list_tasks(user: CurrentUser, db: DB) -> list[TaskOut]:
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_task(body: TaskCreate, user: CurrentUser, db: DB) -> TaskOut:
+    await task_service.check_links(db, user, body.model_dump())
     task = task_service.create_task(db, user, body)
     await db.commit()
     return (await task_service.presenter(db, user))(task)
@@ -27,7 +28,9 @@ async def create_task(body: TaskCreate, user: CurrentUser, db: DB) -> TaskOut:
 async def update_task(task_id: uuid.UUID, body: TaskUpdate, user: CurrentUser, db: DB) -> TaskOut:
     """Выполнение задачи начисляет опыт; повторяющаяся задача переезжает на следующий раз."""
     task = await task_service.get_task(db, user.id, task_id)
-    await task_service.update_task(db, user, task, body.model_dump(exclude_unset=True))
+    changes = body.model_dump(exclude_unset=True)
+    await task_service.check_links(db, user, changes)
+    await task_service.update_task(db, user, task, changes)
     await db.commit()
     return (await task_service.presenter(db, user))(task)
 

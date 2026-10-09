@@ -25,6 +25,10 @@ struct LocalCache<Value: Codable> {
         }
     }
 
+    func clear() {
+        try? FileManager.default.removeItem(at: url)
+    }
+
     /// При выходе из аккаунта: данные одного пользователя не должны достаться другому.
     static func clearAll() {
         try? FileManager.default.removeItem(at: directory)

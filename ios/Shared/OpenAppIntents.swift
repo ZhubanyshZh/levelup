@@ -30,3 +30,29 @@ struct OpenJournalEntryIntent: AppIntent {
         return .result()
     }
 }
+
+/// «Трата»: открывает запись голосом с подсказкой «сколько и на что».
+struct OpenExpenseCaptureIntent: AppIntent {
+    static let title: LocalizedStringResource = "Записать трату"
+    static let description = IntentDescription("Открывает Level Up и сразу слушает: «такси 3500».")
+    static let openAppWhenRun = true
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        RouteCenter.shared.open(.capture(.expense))
+        return .result()
+    }
+}
+
+/// «Тренировка»: продолжить текущую или начать новую.
+struct OpenWorkoutIntent: AppIntent {
+    static let title: LocalizedStringResource = "Начать тренировку"
+    static let description = IntentDescription("Открывает тренировку в Level Up: начать новую или продолжить текущую.")
+    static let openAppWhenRun = true
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        RouteCenter.shared.open(.workout)
+        return .result()
+    }
+}

@@ -172,6 +172,21 @@ extension WidgetSnapshot {
             ]
         )
         snapshot.tasks[0].doneOn = today
+        snapshot.finance = FinanceEntry(
+            currency: "KZT", month: LocalDate(year: today.year, month: today.month, day: 1), day: today,
+            spentMonth: 184_500, spentToday: 4_700, monthlyBudget: 300_000
+        )
+        snapshot.workouts = WorkoutEntry(
+            days: [today.adding(days: -2), today], lastTitle: String(localized: "Силовая"), lastDate: today,
+            lastRecord: String(localized: "Жим лёжа"), activeSince: nil
+        )
+        snapshot.goals = [GoalEntry(id: UUID(), title: String(localized: "Пробежать 10 км"), progress: 0.6, deadline: today.adding(days: 45), icon: "💪")]
+        snapshot.quests = [
+            QuestEntry(id: UUID(), title: String(localized: "Выполни задач: 3"), isDaily: true, periodEnd: today, progress: 2, target: 3, reward: 50, isDone: false),
+            QuestEntry(id: UUID(), title: String(localized: "Тренировок: 3"), isDaily: false, periodEnd: today.adding(days: 3), progress: 3, target: 3, reward: 150, isDone: true),
+            QuestEntry(id: UUID(), title: String(localized: "Дневник: 5 дн."), isDaily: false, periodEnd: today.adding(days: 3), progress: 2, target: 5, reward: 100, isDone: false),
+        ]
+        snapshot.streakDays = 6
         return snapshot
     }()
 }

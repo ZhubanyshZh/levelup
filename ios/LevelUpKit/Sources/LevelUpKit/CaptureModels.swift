@@ -15,6 +15,25 @@ public struct BusyConflict: Codable, Sendable, Hashable {
     public var end: String
 }
 
+/// Упражнение в записи о тренировке: «3 подхода по 5 с 80 кг».
+public struct ExerciseEntry: Codable, Sendable, Hashable {
+    public var name: String
+    public var sets: Int
+    public var reps: Int?
+    public var weightKg: Double?
+    public var durationSec: Int?
+    public var distanceM: Double?
+
+    public init(name: String, sets: Int = 1, reps: Int? = nil, weightKg: Double? = nil, durationSec: Int? = nil, distanceM: Double? = nil) {
+        self.name = name
+        self.sets = sets
+        self.reps = reps
+        self.weightKg = weightKg
+        self.durationSec = durationSec
+        self.distanceM = distanceM
+    }
+}
+
 public struct CaptureItem: Codable, Sendable, Identifiable, Hashable {
     /// Только для SwiftUI-списков, на сервер не уходит.
     public var id = UUID()
@@ -34,6 +53,13 @@ public struct CaptureItem: Codable, Sendable, Identifiable, Hashable {
     public var tags: [String]
     public var products: [ShoppingInput]
     public var listName: String?
+    public var amount: Double?
+    public var currency: String?
+    public var category: String?
+    public var exercises: [ExerciseEntry]
+    public var targetValue: Double?
+    public var metricUnit: String?
+    public var sphere: String?
     public var include: Bool
     public var supported: Bool
     public var conflict: BusyConflict?
@@ -43,6 +69,7 @@ public struct CaptureItem: Codable, Sendable, Identifiable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case type, title, details, dueDate, dueTime, remind, priority, difficulty
         case factCategory, schedule, recurrence, mood, energy, tags, products, listName
+        case amount, currency, category, exercises, targetValue, metricUnit, sphere
         case include, supported, conflict
     }
 
@@ -64,6 +91,13 @@ public struct CaptureItem: Codable, Sendable, Identifiable, Hashable {
         tags = try container.decodeIfPresent([String].self, forKey: .tags) ?? []
         products = try container.decodeIfPresent([ShoppingInput].self, forKey: .products) ?? []
         listName = try container.decodeIfPresent(String.self, forKey: .listName)
+        amount = try container.decodeIfPresent(Double.self, forKey: .amount)
+        currency = try container.decodeIfPresent(String.self, forKey: .currency)
+        category = try container.decodeIfPresent(String.self, forKey: .category)
+        exercises = try container.decodeIfPresent([ExerciseEntry].self, forKey: .exercises) ?? []
+        targetValue = try container.decodeIfPresent(Double.self, forKey: .targetValue)
+        metricUnit = try container.decodeIfPresent(String.self, forKey: .metricUnit)
+        sphere = try container.decodeIfPresent(String.self, forKey: .sphere)
         include = try container.decodeIfPresent(Bool.self, forKey: .include) ?? true
         supported = try container.decodeIfPresent(Bool.self, forKey: .supported) ?? false
         conflict = try container.decodeIfPresent(BusyConflict.self, forKey: .conflict)
@@ -110,8 +144,28 @@ public struct CaptureResult: Decodable, Sendable {
     public var facts: [ProfileFact]
     public var journal: [JournalEntry]
     public var shopping: [ShoppingItem]
+    public var transactions: [MoneyTransaction]
+    public var workouts: [Workout]
+    public var goals: [Goal]
     /// Опыт, полученный при сохранении (например, за дневник).
     public var xpGained: Int
+
+    private enum CodingKeys: String, CodingKey {
+        case capture, tasks, facts, journal, shopping, transactions, workouts, goals, xpGained
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        capture = try c.decode(Capture.self, forKey: .capture)
+        tasks = try c.decodeIfPresent([TaskItem].self, forKey: .tasks) ?? []
+        facts = try c.decodeIfPresent([ProfileFact].self, forKey: .facts) ?? []
+        journal = try c.decodeIfPresent([JournalEntry].self, forKey: .journal) ?? []
+        shopping = try c.decodeIfPresent([ShoppingItem].self, forKey: .shopping) ?? []
+        transactions = try c.decodeIfPresent([MoneyTransaction].self, forKey: .transactions) ?? []
+        workouts = try c.decodeIfPresent([Workout].self, forKey: .workouts) ?? []
+        goals = try c.decodeIfPresent([Goal].self, forKey: .goals) ?? []
+        xpGained = try c.decodeIfPresent(Int.self, forKey: .xpGained) ?? 0
+    }
 }
 
 public struct CaptureRequest: Codable, Sendable {

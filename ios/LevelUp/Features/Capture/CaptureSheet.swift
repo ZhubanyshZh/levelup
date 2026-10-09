@@ -49,7 +49,7 @@ struct CaptureSheet: View {
         .onAppear {
             if let initialCapture {
                 show(initialCapture)
-            } else if startMode == .voice {
+            } else if startMode == .voice || startMode == .expense {
                 toggleRecording()
             } else {
                 isEditorFocused = true
@@ -64,7 +64,7 @@ struct CaptureSheet: View {
 
     private var title: LocalizedStringKey {
         switch phase {
-        case .input, .working: "Новая запись"
+        case .input, .working: startMode == .expense ? "Новая трата" : "Новая запись"
         case .preview: "Проверь"
         case .failed, .deferred, .queued: "Входящие"
         case .saved: "Готово"
@@ -96,7 +96,9 @@ struct CaptureSheet: View {
                     .scrollContentBackground(.hidden)
                     .padding(10)
                 if text.isEmpty {
-                    Text("Скажи или напиши что угодно: дела, мысли, «запомни, что…». ИИ сам разложит по местам.")
+                    Text(startMode == .expense
+                         ? LocalizedStringKey("Сколько и на что? Например: «такси 3500» или «кофе 1200 и обед 4000».")
+                         : LocalizedStringKey("Скажи или напиши что угодно: дела, мысли, «запомни, что…». ИИ сам разложит по местам."))
                         .foregroundStyle(.tertiary)
                         .padding(16)
                         .allowsHitTesting(false)

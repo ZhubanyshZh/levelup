@@ -78,21 +78,3 @@ class ShoppingOut(BaseModel):
     position: float
     created_at: datetime
     updated_at: datetime
-
-
-class XPEventOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    source_type: str
-    amount: int
-    title: str
-    created_at: datetime
-
-
-class ProgressOut(BaseModel):
-    level: int
-    xp_in_level: int
-    xp_for_next_level: int
-    total_xp: int
-    today_xp: int
-    recent: list[XPEventOut]

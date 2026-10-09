@@ -138,6 +138,25 @@ struct APIClientTests {
         #expect(store.all() == [.task(id: id, done: false)])
     }
 
+    @Test func financeSummaryAsksForMonth() async throws {
+        MockURLProtocol.handler = { request in
+            #expect(request.url?.path == "/finance/summary")
+            #expect(request.url?.query == "month=2026-09")
+            return (200, Data("""
+            {"month":"2026-09","currency":"KZT","spent":4700.5,"income":0,"spent_today":0,"spent_week":0,
+             "week_allowance":null,"expenses_by_category":[{"category":"cafe","amount":4700.5}],
+             "income_by_category":[],"by_day":[{"date":"2026-09-03","spent":4700.5,"income":0}],
+             "budgets":[],"other_currencies":[]}
+            """.utf8))
+        }
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+
+        let summary = try await client.financeSummary(month: LocalDate(year: 2026, month: 9, day: 17))
+
+        #expect(summary.spent == 4700.5)
+        #expect(summary.byDay.first?.date == LocalDate(year: 2026, month: 9, day: 3))
+    }
+
     private func makeClient(_ store: InMemoryTokenStore) -> APIClient {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]

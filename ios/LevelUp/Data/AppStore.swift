@@ -13,6 +13,9 @@ final class AppStore {
     let journal: JournalStore
     let shopping: ShoppingStore
     let progress: ProgressStore
+    let finance: FinanceStore
+    let workouts: WorkoutStore
+    let goals: GoalStore
     private let reminders = ReminderScheduler()
     private let api: APIClient
     private let widgets: WidgetPublisher
@@ -35,8 +38,14 @@ final class AppStore {
         journal = JournalStore(api: api)
         shopping = ShoppingStore(api: api)
         progress = ProgressStore(api: api)
+        finance = FinanceStore(api: api)
+        workouts = WorkoutStore(api: api)
+        goals = GoalStore(api: api)
 
         tasks.onUnauthorized = onUnauthorized
+        finance.onUnauthorized = onUnauthorized
+        workouts.onUnauthorized = onUnauthorized
+        goals.onUnauthorized = onUnauthorized
         captures.onUnauthorized = onUnauthorized
         profile.onUnauthorized = onUnauthorized
         ai.onUnauthorized = onUnauthorized
@@ -45,14 +54,20 @@ final class AppStore {
         progress.onUnauthorized = onUnauthorized
 
         let progress = progress
-        tasks.onProgressChange = { _ = Task { await progress.refreshAfterAction() } }
-        journal.onProgressChange = { _ = Task { await progress.refreshAfterAction() } }
+        let refreshProgress: () -> Void = { _ = Task { await progress.refreshAfterAction() } }
+        tasks.onProgressChange = refreshProgress
+        journal.onProgressChange = refreshProgress
+        workouts.onProgressChange = refreshProgress
+        goals.onProgressChange = refreshProgress
 
         let publish: () -> Void = { [weak self] in self?.publishWidgets() }
         tasks.onChange = publish
         shopping.onChange = publish
         journal.onChange = publish
         profile.onChange = publish
+        finance.onChange = publish
+        workouts.onChange = publish
+        goals.onChange = publish
         progress.onChange = { _ in publish() }
     }
 
@@ -67,7 +82,11 @@ final class AppStore {
         async let journalLoaded: Void = journal.load()
         async let shoppingLoaded: Void = shopping.load()
         async let progressLoaded: Void = progress.load()
+        async let financeLoaded: Void = finance.load()
+        async let workoutsLoaded: Void = workouts.load()
+        async let goalsLoaded: Void = goals.load()
         _ = await (tasksLoaded, factsLoaded, aiLoaded, journalLoaded, shoppingLoaded, progressLoaded)
+        _ = await (financeLoaded, workoutsLoaded, goalsLoaded)
         await captures.flushOutbox()
     }
 
@@ -77,6 +96,9 @@ final class AppStore {
         profile.insert(result.facts)
         journal.insert(result.journal)
         shopping.insert(result.shopping)
+        finance.insert(result.transactions)
+        workouts.insert(result.workouts)
+        goals.insert(result.goals)
         if result.xpGained > 0 {
             Task { await progress.refreshAfterAction() }
         }
@@ -98,6 +120,33 @@ final class AppStore {
             busy: WidgetSnapshot.busySlots(profile.facts)
         )
         snapshot.apply(progress.progress, today: today)
+        snapshot.streakDays = progress.progress.streakDays
+        snapshot.quests = progress.progress.quests.map { quest in
+            WidgetSnapshot.QuestEntry(
+                id: quest.id, title: quest.title, isDaily: quest.period == .day, periodEnd: quest.periodEnd,
+                progress: quest.progress, target: quest.target, reward: quest.reward, isDone: quest.isDone
+            )
+        }
+        if let summary = finance.summary, finance.isCurrentMonth {
+            snapshot.finance = WidgetSnapshot.FinanceEntry(
+                currency: summary.currency, month: finance.month, day: today,
+                spentMonth: summary.spent, spentToday: summary.spentToday, monthlyBudget: summary.totalBudget?.monthlyLimit
+            )
+        }
+        let last = workouts.workouts.first
+        snapshot.workouts = WidgetSnapshot.WorkoutEntry(
+            days: Array(Set(workouts.workouts.map(\.workoutDate).filter { $0 >= today.adding(days: -60) })).sorted(),
+            lastTitle: last.map { $0.title ?? $0.exercises.map(\.name).prefix(2).joined(separator: ", ") },
+            lastDate: last?.workoutDate,
+            lastRecord: workouts.workouts.lazy.flatMap(\.sets).first(where: \.isPr)?.exercise,
+            activeSince: workouts.active?.startedAt
+        )
+        snapshot.goals = goals.active.map { goal in
+            WidgetSnapshot.GoalEntry(
+                id: goal.id, title: goal.title, progress: goal.progress, deadline: goal.deadline,
+                icon: progress.sphere(goal.sphere)?.icon
+            )
+        }
         return snapshot
     }
 
@@ -109,6 +158,9 @@ final class AppStore {
         journal.reset()
         shopping.reset()
         progress.reset()
+        finance.reset()
+        workouts.reset()
+        goals.reset()
         LocalCache<[TaskItem]>.clearAll()
     }
 }

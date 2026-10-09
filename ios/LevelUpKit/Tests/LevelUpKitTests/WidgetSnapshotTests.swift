@@ -76,6 +76,27 @@ struct WidgetSnapshotTests {
         #expect(snapshot.xpToday(on: today.adding(days: 1)) == 0)
     }
 
+    @Test func moduleNumbersBelongToTheirDay() {
+        let snapshot = WidgetSnapshot(
+            isSignedIn: true,
+            finance: .init(currency: "KZT", month: LocalDate(year: 2026, month: 10, day: 1), day: today, spentMonth: 120_000, spentToday: 3500, monthlyBudget: 300_000),
+            workouts: .init(days: [today.adding(days: -8), today.adding(days: -3), today], lastTitle: "Силовая", lastDate: today, lastRecord: nil, activeSince: nil),
+            quests: [
+                .init(id: UUID(), title: "Задач: 3", isDaily: true, periodEnd: today, progress: 1, target: 3, reward: 50, isDone: false),
+                .init(id: UUID(), title: "Тренировок: 3", isDaily: false, periodEnd: today.adding(days: 2), progress: 2, target: 3, reward: 150, isDone: false),
+            ]
+        )
+
+        #expect(snapshot.spentToday(on: today) == 3500)
+        #expect(snapshot.spentToday(on: today.adding(days: 1)) == 0)
+        #expect(snapshot.spentMonth(on: today) == 120_000)
+        #expect(snapshot.spentMonth(on: LocalDate(year: 2026, month: 11, day: 1)) == 0)
+        // 2026-10-09 — пятница: на этой неделе тренировки 6-го и 9-го.
+        #expect(snapshot.workoutsThisWeek(on: today) == 2)
+        #expect(snapshot.quests(on: today).count == 2)
+        #expect(snapshot.quests(on: today.adding(days: 1)).map(\.isDaily) == [false])
+    }
+
     @Test func snapshotFromOlderAppVersionStillDecodes() throws {
         let old = Data(#"{"is_signed_in":true,"display_name":"Жубаныш","level":4,"xp":10,"xp_for_next_level":800,"updated_at":"2026-10-09T10:00:00Z"}"#.utf8)
 
@@ -86,7 +107,10 @@ struct WidgetSnapshotTests {
     }
 
     @Test func routesRoundTripThroughURLs() {
-        let routes: [AppRoute] = [.capture(.voice), .capture(.text), .newJournalEntry, .journal, .shopping, .today]
+        let routes: [AppRoute] = [
+            .capture(.voice), .capture(.text), .capture(.expense), .newJournalEntry, .journal, .shopping, .today,
+            .finance, .workout, .goals, .goal(UUID()), .progress,
+        ]
         for route in routes {
             #expect(AppRoute(url: route.url) == route)
         }

@@ -72,6 +72,8 @@ class XPEvent(UUIDPrimaryKeyMixin, Base):
     source_type: Mapped[str] = mapped_column(String(20))
     source_key: Mapped[str] = mapped_column(String(120))
     amount: Mapped[int]
+    # Ключ сферы жизни (body, mind, …): из суммы по ней считается уровень сферы.
+    sphere: Mapped[str | None] = mapped_column(String(40))
     # Название на момент начисления — для истории «за что».
     title: Mapped[str] = mapped_column(String(300))
     created_at: Mapped[datetime] = mapped_column(default=utcnow, server_default=func.now())

@@ -8,16 +8,14 @@ from app.schemas.daily import (
     JournalIn,
     JournalOut,
     JournalUpdate,
-    ProgressOut,
     ShoppingIn,
     ShoppingOut,
     ShoppingUpdate,
 )
-from app.services import daily, xp
+from app.services import daily
 
 journal = APIRouter(prefix="/journal", tags=["journal"])
 shopping = APIRouter(prefix="/shopping", tags=["shopping"])
-progress = APIRouter(prefix="/progress", tags=["progress"])
 
 
 # --- Дневник ---
@@ -99,11 +97,3 @@ async def delete_shopping(item_id: uuid.UUID, user: CurrentUser, db: DB) -> None
     item = await daily.get_shopping(db, user.id, item_id)
     item.deleted_at = utcnow()
     await db.commit()
-
-
-# --- Прогресс ---
-
-
-@progress.get("")
-async def get_progress(user: CurrentUser, db: DB) -> ProgressOut:
-    return await xp.progress(db, user)

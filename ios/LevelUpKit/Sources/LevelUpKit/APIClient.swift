@@ -163,10 +163,110 @@ public actor APIClient {
         try await sendAuthorizedEmpty(Request(method: "POST", path: "shopping/clear-bought"))
     }
 
-    // MARK: Прогресс
+    // MARK: Прогресс и сферы
 
+    /// Уровень, сферы, серия, квесты и достижения. Сервер заодно засчитывает выполненные квесты.
     public func progress() async throws -> LevelProgress {
         try await sendAuthorized(Request(method: "GET", path: "progress"))
+    }
+
+    public func createSphere(_ input: SphereInput) async throws -> Sphere {
+        try await sendAuthorized(Request(method: "POST", path: "spheres", body: encoder.encode(input)))
+    }
+
+    public func updateSphere(id: UUID, _ input: SphereInput) async throws -> Sphere {
+        try await sendAuthorized(Request(method: "PATCH", path: "spheres/\(id.uuidString)", body: encoder.encode(input)))
+    }
+
+    public func deleteSphere(id: UUID) async throws {
+        try await sendAuthorizedEmpty(Request(method: "DELETE", path: "spheres/\(id.uuidString)"))
+    }
+
+    // MARK: Финансы
+
+    public func transactions(month: LocalDate) async throws -> [MoneyTransaction] {
+        try await sendAuthorized(Request(method: "GET", path: "finance/transactions", query: ["month": Self.month(month)]))
+    }
+
+    public func createTransaction(_ input: TransactionInput) async throws -> MoneyTransaction {
+        try await sendAuthorized(Request(method: "POST", path: "finance/transactions", body: encoder.encode(input)))
+    }
+
+    public func updateTransaction(id: UUID, _ input: TransactionInput) async throws -> MoneyTransaction {
+        try await sendAuthorized(Request(method: "PATCH", path: "finance/transactions/\(id.uuidString)", body: encoder.encode(input)))
+    }
+
+    public func deleteTransaction(id: UUID) async throws {
+        try await sendAuthorizedEmpty(Request(method: "DELETE", path: "finance/transactions/\(id.uuidString)"))
+    }
+
+    public func financeSummary(month: LocalDate) async throws -> FinanceSummary {
+        try await sendAuthorized(Request(method: "GET", path: "finance/summary", query: ["month": Self.month(month)]))
+    }
+
+    public func setBudget(_ input: BudgetInput) async throws -> FinanceSummary {
+        try await sendAuthorized(Request(method: "PUT", path: "finance/budgets", body: encoder.encode(input)))
+    }
+
+    public func deleteBudget(category: MoneyCategory?) async throws -> FinanceSummary {
+        let query = category.map { ["category": $0.rawValue] } ?? [:]
+        return try await sendAuthorized(Request(method: "DELETE", path: "finance/budgets", query: query))
+    }
+
+    private static func month(_ date: LocalDate) -> String {
+        String(format: "%04d-%02d", date.year, date.month)
+    }
+
+    // MARK: Тренировки
+
+    public func workouts() async throws -> [Workout] {
+        try await sendAuthorized(Request(method: "GET", path: "workouts"))
+    }
+
+    public func createWorkout(_ input: WorkoutInput) async throws -> WorkoutResult {
+        try await sendAuthorized(Request(method: "POST", path: "workouts", body: encoder.encode(input)))
+    }
+
+    public func updateWorkout(id: UUID, _ input: WorkoutInput) async throws -> WorkoutResult {
+        try await sendAuthorized(Request(method: "PATCH", path: "workouts/\(id.uuidString)", body: encoder.encode(input)))
+    }
+
+    public func deleteWorkout(id: UUID) async throws {
+        try await sendAuthorizedEmpty(Request(method: "DELETE", path: "workouts/\(id.uuidString)"))
+    }
+
+    public func exerciseStats() async throws -> [ExerciseStats] {
+        try await sendAuthorized(Request(method: "GET", path: "workouts/exercises"))
+    }
+
+    // MARK: Цели
+
+    public func goals() async throws -> [Goal] {
+        try await sendAuthorized(Request(method: "GET", path: "goals"))
+    }
+
+    public func createGoal(_ input: GoalInput) async throws -> Goal {
+        try await sendAuthorized(Request(method: "POST", path: "goals", body: encoder.encode(input)))
+    }
+
+    public func updateGoal(id: UUID, _ update: GoalUpdate) async throws -> Goal {
+        try await sendAuthorized(Request(method: "PATCH", path: "goals/\(id.uuidString)", body: encoder.encode(update)))
+    }
+
+    public func deleteGoal(id: UUID) async throws {
+        try await sendAuthorizedEmpty(Request(method: "DELETE", path: "goals/\(id.uuidString)"))
+    }
+
+    public func addGoalStep(goalID: UUID, title: String) async throws -> Goal {
+        try await sendAuthorized(Request(method: "POST", path: "goals/\(goalID.uuidString)/steps", body: encoder.encode(["title": title])))
+    }
+
+    public func setGoalStep(goalID: UUID, stepID: UUID, isDone: Bool) async throws -> Goal {
+        try await sendAuthorized(Request(method: "PATCH", path: "goals/\(goalID.uuidString)/steps/\(stepID.uuidString)", body: encoder.encode(["is_done": isDone])))
+    }
+
+    public func deleteGoalStep(goalID: UUID, stepID: UUID) async throws -> Goal {
+        try await sendAuthorized(Request(method: "DELETE", path: "goals/\(goalID.uuidString)/steps/\(stepID.uuidString)"))
     }
 
     // MARK: Настройки ИИ
@@ -280,7 +380,11 @@ public actor APIClient {
     }
 
     private func perform(_ request: Request, accessToken: String?) async throws -> Data {
-        var urlRequest = URLRequest(url: baseURL.appending(path: request.path))
+        var url = baseURL.appending(path: request.path)
+        if !request.query.isEmpty {
+            url.append(queryItems: request.query.sorted { $0.key < $1.key }.map { URLQueryItem(name: $0.key, value: $0.value) })
+        }
+        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = request.method
         urlRequest.timeoutInterval = request.timeout
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -317,7 +421,16 @@ private struct Request: Sendable {
     var method: String
     var path: String
     var body: Data?
+    var query: [String: String] = [:]
     var timeout: TimeInterval = 20
+
+    init(method: String, path: String, body: Data? = nil, query: [String: String] = [:], timeout: TimeInterval = 20) {
+        self.method = method
+        self.path = path
+        self.body = body
+        self.query = query
+        self.timeout = timeout
+    }
 }
 
 private struct SignInBody: Encodable {

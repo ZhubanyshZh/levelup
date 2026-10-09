@@ -14,8 +14,11 @@ from app.schemas.capture import (
     CaptureResult,
 )
 from app.schemas.daily import JournalOut, ShoppingOut
+from app.schemas.finance import TransactionOut
 from app.schemas.profile import ProfileFactOut
+from app.schemas.workouts import WorkoutOut
 from app.services import captures as capture_service
+from app.services import goals as goal_service
 from app.services import tasks as task_service
 from app.services.ai.providers import ProviderFactory, get_provider_factory
 from app.services.captures import CreatedRecords
@@ -112,5 +115,8 @@ async def _result(db: DB, user: User, capture: Capture, created: CreatedRecords)
         facts=[ProfileFactOut.model_validate(f) for f in created.facts],
         journal=[JournalOut.model_validate(e) for e in created.journal],
         shopping=[ShoppingOut.model_validate(i) for i in created.shopping],
+        transactions=[TransactionOut.model_validate(t) for t in created.transactions],
+        workouts=[WorkoutOut.model_validate(w) for w in created.workouts],
+        goals=[goal_service.present(g) for g in created.goals],
         xp_gained=created.xp_gained,
     )

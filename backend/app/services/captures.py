@@ -13,18 +13,32 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import Settings
 from app.core.errors import AppError
 from app.core.time import utcnow
-from app.models import Capture, JournalEntry, ProfileFact, ShoppingItem, Task, User
+from app.models import (
+    Capture,
+    Goal,
+    JournalEntry,
+    ProfileFact,
+    ShoppingItem,
+    Task,
+    Transaction,
+    User,
+    Workout,
+)
 from app.schemas.capture import (
     SUPPORTED_ITEM_TYPES,
     CaptureItem,
+    ExerciseEntry,
     ParsedItem,
     ParseResult,
 )
 from app.schemas.common import format_hhmm, parse_hhmm
 from app.schemas.daily import JournalIn, ShoppingIn
+from app.schemas.finance import EXPENSE_CATEGORIES, INCOME_CATEGORIES, TransactionIn
+from app.schemas.goals import GoalIn
 from app.schemas.profile import ScheduleData
 from app.schemas.task import Recurrence, TaskCreate
-from app.services import ai_settings, daily
+from app.schemas.workouts import SetIn, WorkoutIn
+from app.services import ai_settings, daily, finance, goals, spheres, workouts
 from app.services.ai.context import ContextBuilder, UserContext
 from app.services.ai.providers import AIError, ProviderFactory
 from app.services.profile import list_facts
@@ -40,6 +54,9 @@ class CreatedRecords:
     facts: list[ProfileFact] = field(default_factory=list)
     journal: list[JournalEntry] = field(default_factory=list)
     shopping: list[ShoppingItem] = field(default_factory=list)
+    transactions: list[Transaction] = field(default_factory=list)
+    workouts: list[Workout] = field(default_factory=list)
+    goals: list[Goal] = field(default_factory=list)
     xp_gained: int = 0
 
     @property
@@ -49,6 +66,9 @@ class CreatedRecords:
             ("profile_fact", self.facts),
             ("journal", self.journal),
             ("shopping", self.shopping),
+            ("transaction", self.transactions),
+            ("workout", self.workouts),
+            ("goal", self.goals),
         )
         return [{"type": kind, "id": str(row.id)} for kind, rows in groups for row in rows]
 
@@ -87,7 +107,14 @@ async def parse_capture(
         return
 
     facts = await list_facts(db, user.id, active_only=True)
-    context = UserContext.build(timezone=capture.timezone, locale=user.locale, facts=facts)
+    context = UserContext.build(
+        timezone=capture.timezone,
+        locale=user.locale,
+        facts=facts,
+        currency=finance.user_currency(user),
+        spheres=[(s.key, s.name) for s in await spheres.list_spheres(db, user)],
+        goals=[g.title for g in await goals.list_goals(db, user.id) if g.status == "active"],
+    )
     provider = factory(
         resolved.provider, resolved.api_key, resolved.model, settings.ai_timeout_seconds
     )
@@ -143,9 +170,7 @@ async def resolve_deferred(db: AsyncSession, user: User) -> None:
     )
     for capture in rows:
         items = [CaptureItem.model_validate(item) for item in capture.items]
-        ready = [
-            i for i in items if i.include and not i.supported and i.type in SUPPORTED_ITEM_TYPES
-        ]
+        ready = [i for i in items if i.include and not i.supported and is_ready(i)]
         if not ready:
             continue
         created = await _create_records(db, user, capture, ready)
@@ -161,13 +186,24 @@ async def undo_capture(db: AsyncSession, user: User, capture: Capture) -> None:
     if capture.status not in ("confirmed", "deferred"):
         raise AppError("capture_not_undoable", status_code=409)
     now = utcnow()
-    models = {"task": Task, "profile_fact": ProfileFact, "shopping": ShoppingItem}
+    models = {
+        "task": Task,
+        "profile_fact": ProfileFact,
+        "shopping": ShoppingItem,
+        "transaction": Transaction,
+        "goal": Goal,
+    }
     for ref in capture.created_refs:
         ref_id = uuid.UUID(ref["id"])
         if ref["type"] == "journal":
             entry = await db.get(JournalEntry, ref_id)
             if entry is not None and entry.deleted_at is None:
                 await daily.delete_journal(db, user, entry)
+            continue
+        if ref["type"] == "workout":
+            workout = await db.get(Workout, ref_id)
+            if workout is not None and workout.deleted_at is None:
+                await workouts.delete_workout(db, user, workout)
             continue
         row = await db.get(models[ref["type"]], ref_id)
         if row is not None and row.deleted_at is None:
@@ -181,7 +217,9 @@ async def _create_records(
     created = CreatedRecords()
     for item in items:
         if item.type == "task":
-            created.tasks.append(create_task(db, user, _task_data(item), capture_id=capture.id))
+            data = _task_data(item)
+            data.sphere = await spheres.valid_key(db, user, item.sphere)
+            created.tasks.append(create_task(db, user, data, capture_id=capture.id))
         elif item.type == "profile_fact":
             fact = ProfileFact(
                 id=uuid.uuid4(),
@@ -215,7 +253,76 @@ async def _create_records(
                 created.shopping.append(
                     daily.create_shopping(db, user, product, capture_id=capture.id)
                 )
+        elif item.type in ("expense", "income") and item.amount:
+            created.transactions.append(
+                finance.create_transaction(
+                    db,
+                    user,
+                    TransactionIn(
+                        kind=item.type,
+                        amount=item.amount,
+                        currency=item.currency,
+                        category=item.category
+                        or ("other" if item.type == "expense" else "other_income"),
+                        note=item.details or item.title,
+                        occurred_on=item.due_date,
+                    ),
+                    capture_id=capture.id,
+                )
+            )
+        elif item.type == "workout" and item.exercises:
+            workout, gained, _ = await workouts.create_workout(
+                db,
+                user,
+                WorkoutIn(
+                    workout_date=item.due_date,
+                    title=item.title[:100],
+                    note=item.details,
+                    sets=sets_of(item.exercises),
+                ),
+                capture_id=capture.id,
+            )
+            created.workouts.append(workout)
+            created.xp_gained += gained
+        elif item.type == "goal":
+            created.goals.append(
+                goals.create_goal(
+                    db,
+                    user,
+                    GoalIn(
+                        title=item.title[:200],
+                        why=item.details,
+                        deadline=item.due_date,
+                        metric_unit=item.metric_unit,
+                        target_value=item.target_value,
+                    ),
+                    sphere=await spheres.valid_key(db, user, item.sphere),
+                    capture_id=capture.id,
+                )
+            )
     return created
+
+
+def sets_of(exercises: Sequence[ExerciseEntry]) -> list[SetIn]:
+    """«Присед 3 по 8 с 80» → три одинаковых подхода."""
+    result = []
+    for exercise in exercises:
+        if all(
+            v is None
+            for v in (exercise.reps, exercise.weight_kg, exercise.duration_sec, exercise.distance_m)
+        ):
+            continue
+        for _ in range(exercise.sets):
+            result.append(
+                SetIn(
+                    exercise=exercise.name,
+                    reps=exercise.reps,
+                    weight_kg=exercise.weight_kg,
+                    duration_sec=exercise.duration_sec,
+                    distance_m=exercise.distance_m,
+                )
+            )
+    return result[:300]
 
 
 def normalize_item(raw: ParsedItem) -> CaptureItem:
@@ -261,6 +368,31 @@ def normalize_item(raw: ParsedItem) -> CaptureItem:
         if raw.type == "shopping"
         else None,
     )
+    if raw.type in ("expense", "income"):
+        item.amount = raw.amount if raw.amount and raw.amount > 0 else None
+        item.currency = (raw.currency or "").strip().upper()[:3] or None
+        if item.currency and not re.fullmatch(r"[A-Z]{3}", item.currency):
+            item.currency = None
+        allowed = EXPENSE_CATEGORIES if raw.type == "expense" else INCOME_CATEGORIES
+        item.category = raw.category if raw.category in allowed else allowed[-1]
+    if raw.type == "workout":
+        item.exercises = [
+            ExerciseEntry(
+                name=e.name.strip()[:100],
+                sets=min(max(e.sets or 1, 1), 50),
+                reps=_within(e.reps, 10000),
+                weight_kg=_within(e.weight_kg, 1000),
+                duration_sec=_within(e.duration_sec, 86400),
+                distance_m=_within(e.distance_m, 1_000_000),
+            )
+            for e in raw.exercises or []
+            if e.name and e.name.strip()
+        ]
+    if raw.type == "goal":
+        item.target_value = raw.target_value
+        item.metric_unit = (raw.metric_unit or "").strip()[:30] or None
+    if raw.type in ("task", "goal"):
+        item.sphere = raw.sphere
     if raw.type == "shopping":
         item.products = [
             ShoppingIn(name=p.name.strip()[:200], quantity=(p.quantity or "").strip()[:50] or None)
@@ -288,9 +420,21 @@ def annotate(item: CaptureItem, facts: Sequence[ProfileFact]) -> CaptureItem:
     due_time = parse_hhmm(item.due_time)
     if item.type == "task" and item.due_date and due_time:
         conflict = find_busy_conflict(item.due_date, due_time, facts)
-    return item.model_copy(
-        update={"supported": item.type in SUPPORTED_ITEM_TYPES, "conflict": conflict}
-    )
+    return item.model_copy(update={"supported": is_ready(item), "conflict": conflict})
+
+
+def is_ready(item: CaptureItem) -> bool:
+    """Можно ли сохранить запись в раздел: тип поддержан и данных хватает.
+
+    Трата без суммы или тренировка без упражнений ждут во «Входящих» — их можно поправить.
+    """
+    if item.type not in SUPPORTED_ITEM_TYPES:
+        return False
+    if item.type in ("expense", "income"):
+        return bool(item.amount)
+    if item.type == "workout":
+        return bool(sets_of(item.exercises))
+    return True
 
 
 def _task_data(item: CaptureItem) -> TaskCreate:
@@ -304,6 +448,11 @@ def _task_data(item: CaptureItem) -> TaskCreate:
         difficulty=item.difficulty,
         recurrence=item.recurrence,
     )
+
+
+def _within[N: (int, float)](value: N | None, high: N) -> N | None:
+    """Число от 0 до high, иначе null: ИИ мог ошибиться в единицах."""
+    return value if value is not None and 0 <= value <= high else None
 
 
 def _clamp(value: int | None) -> int | None:

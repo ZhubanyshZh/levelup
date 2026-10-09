@@ -61,6 +61,8 @@
 	<string>Микрофон нужен, чтобы записывать задачи и мысли голосом.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Распознавание речи превращает твой голос в текст записи.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

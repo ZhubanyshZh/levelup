@@ -1,6 +1,26 @@
 {
   "sourceLanguage": "ru",
   "strings": {
+    "%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
     "%lld / %lld XP": {
       "localizations": {
         "en": {
@@ -63,6 +83,16 @@
         }
       }
     },
+    "%lld/%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/%lld"
+          }
+        }
+      }
+    },
     "+%lld XP": {
       "localizations": {
         "en": {
@@ -113,6 +143,16 @@
         }
       }
     },
+    "Выполни задач: 3": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Complete tasks: 3"
+          }
+        }
+      }
+    },
     "Вычеркнуть покупку": {
       "localizations": {
         "en": {
@@ -143,6 +183,16 @@
         }
       }
     },
+    "Дневник: 5 дн.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal: 5 days"
+          }
+        }
+      }
+    },
     "До уровня %lld: %lld XP": {
       "localizations": {
         "en": {
@@ -159,6 +209,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld more"
+          }
+        }
+      }
+    },
+    "Жим лёжа": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bench press"
+          }
+        }
+      }
+    },
+    "За месяц %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This month %@"
+          }
+        }
+      }
+    },
+    "Задания на день и неделю и как они продвигаются.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daily and weekly quests and how they're going."
           }
         }
       }
@@ -233,6 +313,16 @@
         }
       }
     },
+    "Записать трату": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log Expense"
+          }
+        }
+      }
+    },
     "Запись в дневник": {
       "localizations": {
         "en": {
@@ -273,12 +363,52 @@
         }
       }
     },
+    "Идёт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active"
+          }
+        }
+      }
+    },
     "Как прошёл день?": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "How was your day?"
+          }
+        }
+      }
+    },
+    "Какой список показывать. Без выбора — все.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which list to show. Without a choice — all."
+          }
+        }
+      }
+    },
+    "Какую цель показывать.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which goal to show."
+          }
+        }
+      }
+    },
+    "Квесты": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quests"
           }
         }
       }
@@ -313,6 +443,36 @@
         }
       }
     },
+    "Начать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
+          }
+        }
+      }
+    },
+    "Начать или продолжить тренировку.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start or continue a workout."
+          }
+        }
+      }
+    },
+    "Начать тренировку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start Workout"
+          }
+        }
+      }
+    },
     "Нет доступа к данным приложения": {
       "localizations": {
         "en": {
@@ -329,6 +489,56 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lunch"
+          }
+        }
+      }
+    },
+    "Основной": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main"
+          }
+        }
+      }
+    },
+    "Осталось %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ left"
+          }
+        }
+      }
+    },
+    "Осталось %lld дн.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld days left"
+          }
+        }
+      }
+    },
+    "Отдых": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest"
+          }
+        }
+      }
+    },
+    "Открой приложение — квесты обновятся": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the app to refresh quests"
           }
         }
       }
@@ -353,12 +563,32 @@
         }
       }
     },
+    "Открывает Level Up и сразу слушает: «такси 3500».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens Level Up and starts listening: “taxi 3500”."
+          }
+        }
+      }
+    },
     "Открывает новую запись в дневнике.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Opens a new journal entry."
+          }
+        }
+      }
+    },
+    "Открывает тренировку в Level Up: начать новую или продолжить текущую.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens a workout in Level Up: start a new one or continue the current one."
           }
         }
       }
@@ -393,6 +623,36 @@
         }
       }
     },
+    "Перерасход %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Over by %@"
+          }
+        }
+      }
+    },
+    "Подходов: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sets: %lld"
+          }
+        }
+      }
+    },
+    "Подходов: %lld · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sets: %lld · %@"
+          }
+        }
+      }
+    },
     "Позвонить в банк": {
       "localizations": {
         "en": {
@@ -419,6 +679,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Shopping"
+          }
+        }
+      }
+    },
+    "Последняя": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last"
+          }
+        }
+      }
+    },
+    "Пробежать 10 км": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run 10 km"
+          }
+        }
+      }
+    },
+    "Прогресс цели и сколько осталось до срока.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Goal progress and time left to the deadline."
           }
         }
       }
@@ -473,12 +763,42 @@
         }
       }
     },
+    "Силовая": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strength"
+          }
+        }
+      }
+    },
     "Скажи «купить молоко и хлеб»": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Say “buy milk and bread”"
+          }
+        }
+      }
+    },
+    "Список": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List"
+          }
+        }
+      }
+    },
+    "Список покупок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shopping List"
           }
         }
       }
@@ -503,6 +823,16 @@
         }
       }
     },
+    "Срок прошёл": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overdue"
+          }
+        }
+      }
+    },
     "Твой уровень и опыт.": {
       "localizations": {
         "en": {
@@ -523,12 +853,62 @@
         }
       }
     },
+    "Трата": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expense"
+          }
+        }
+      }
+    },
+    "Траты за день и месяц, остаток бюджета.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spending today and this month, budget left."
+          }
+        }
+      }
+    },
     "Тренировка": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Workout"
+          }
+        }
+      }
+    },
+    "Тренировки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workouts"
+          }
+        }
+      }
+    },
+    "Тренировки за неделю, последняя и рекорд.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workouts this week, the last one and a record."
+          }
+        }
+      }
+    },
+    "Тренировок: 3": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workouts: 3"
           }
         }
       }
@@ -583,6 +963,16 @@
         }
       }
     },
+    "Финансы": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finance"
+          }
+        }
+      }
+    },
     "Хлеб": {
       "localizations": {
         "en": {
@@ -593,12 +983,42 @@
         }
       }
     },
+    "Целей пока нет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No goals yet"
+          }
+        }
+      }
+    },
+    "Цель": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Goal"
+          }
+        }
+      }
+    },
     "Яблоки": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Apples"
+          }
+        }
+      }
+    },
+    "за неделю": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "this week"
           }
         }
       }

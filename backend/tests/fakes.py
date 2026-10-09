@@ -30,6 +30,13 @@ def parsed(type: str = "task", title: str = "Позвонить в банк", **
         "tags": None,
         "products": None,
         "shopping_list": None,
+        "amount": None,
+        "currency": None,
+        "category": None,
+        "exercises": None,
+        "target_value": None,
+        "metric_unit": None,
+        "sphere": None,
     }
     data.update(fields)
     return ParsedItem.model_validate(data)

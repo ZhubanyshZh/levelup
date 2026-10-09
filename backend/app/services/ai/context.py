@@ -61,6 +61,26 @@ Rules:
 - profile_fact: title is the fact as a short sentence; fill fact_category. For recurring time
   fill schedule_weekdays, schedule_start, schedule_end and schedule_busy (true if the user is
   unavailable then). Otherwise schedule fields are null.
+- expense / income: amount is the number (thousands may be said as "тыс", "к": "3,5к" = 3500);
+  currency only if the user named one, otherwise null (the user's currency is listed below);
+  category is one of the keys below; title is a short description ("Такси"); due_date only if
+  it was not today ("вчера").
+  Expense categories: groceries (food shopping), cafe (cafes, restaurants, coffee, delivery),
+  transport (taxi, fuel, public transport), home (household, rent, furniture), bills (utilities,
+  phone, internet, subscriptions), health (pharmacy, doctors), clothes, fun (entertainment,
+  hobbies, cinema), education (courses, books for study), sport (gym, equipment), gifts,
+  travel, pets, other. Income categories: salary, freelance, gift, refund, other_income.
+- workout: one item per training session; exercises lists every exercise separately with
+  sets, reps, weight_kg, duration_sec (a plank of 2 minutes = 120) and distance_m (5 km = 5000).
+  "3 по 5 с 80" = sets 3, reps 5, weight_kg 80. title is a short summary ("Силовая").
+  due_date only if the workout was not today.
+- goal: a long-term objective ("к декабрю пробежать 10 км", "прочитать 20 книг за год").
+  title is the goal itself; target_value and metric_unit when the goal has a number
+  (10 and "км"); due_date is the deadline if said; details is the reason if said.
+- sphere (tasks and goals): the life sphere the item develops — body (health, sport, sleep,
+  food), mind (learning, reading, languages, skills), finance (money, career, income),
+  discipline (chores, errands, routine work), balance (family, friends, rest, emotions).
+  Use a custom sphere key from the list below when it fits better. Null if unclear.
 - Fields that do not apply to an item are null (remind=false, priority=normal).
   A recurring busy time of the user (prayer, work hours) is a profile_fact, not a task.
 - Take "About the user" into account when interpreting the input.
@@ -74,6 +94,11 @@ class UserContext:
     timezone: str
     locale: str
     facts: Sequence[ProfileFact]
+    currency: str = "KZT"
+    # (ключ, название) — стандартные и свои сферы пользователя.
+    spheres: Sequence[tuple[str, str]] = ()
+    # Названия активных целей.
+    goals: Sequence[str] = ()
 
     @classmethod
     def build(
@@ -82,6 +107,9 @@ class UserContext:
         timezone: str,
         locale: str,
         facts: Sequence[ProfileFact],
+        currency: str = "KZT",
+        spheres: Sequence[tuple[str, str]] = (),
+        goals: Sequence[str] = (),
         now: datetime | None = None,
     ) -> "UserContext":
         tz = ZoneInfo(timezone)
@@ -90,6 +118,9 @@ class UserContext:
             timezone=timezone,
             locale=locale,
             facts=[fact for fact in facts if fact.is_active and fact.deleted_at is None],
+            currency=currency,
+            spheres=spheres,
+            goals=goals,
         )
 
 
@@ -110,9 +141,18 @@ class ContextBuilder:
             f"Now: {now:%Y-%m-%d} ({WEEKDAY_NAMES[now.weekday()]}), {now:%H:%M}, "
             f"timezone {self.context.timezone}.",
             f"Interface language: {self.language}.",
+            f"User's currency: {self.context.currency}.",
             "Upcoming dates: " + ", ".join(self._upcoming_dates()) + ".",
-            "",
         ]
+        if self.context.spheres:
+            lines.append(
+                "Life spheres: "
+                + ", ".join(f"{key} ({name})" for key, name in self.context.spheres)
+                + "."
+            )
+        if self.context.goals:
+            lines.append("Active goals: " + "; ".join(self.context.goals) + ".")
+        lines.append("")
         if self.context.facts:
             lines.append("About the user (always respect this):")
             lines.extend(f"- {describe_fact(fact)}" for fact in self.context.facts)

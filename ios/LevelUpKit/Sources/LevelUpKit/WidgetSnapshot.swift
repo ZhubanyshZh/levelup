@@ -76,6 +76,84 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         }
     }
 
+    /// Деньги за месяц и день, к которым относятся цифры.
+    public struct FinanceEntry: Codable, Sendable, Equatable {
+        public var currency: String
+        /// Первый день месяца, за который spentMonth.
+        public var month: LocalDate
+        public var day: LocalDate
+        public var spentMonth: Double
+        public var spentToday: Double
+        public var monthlyBudget: Double?
+
+        public init(currency: String, month: LocalDate, day: LocalDate, spentMonth: Double, spentToday: Double, monthlyBudget: Double?) {
+            self.currency = currency
+            self.month = month
+            self.day = day
+            self.spentMonth = spentMonth
+            self.spentToday = spentToday
+            self.monthlyBudget = monthlyBudget
+        }
+    }
+
+    public struct WorkoutEntry: Codable, Sendable, Equatable {
+        /// Дни с тренировками за последние два месяца.
+        public var days: [LocalDate]
+        public var lastTitle: String?
+        public var lastDate: LocalDate?
+        /// Последний личный рекорд: упражнение.
+        public var lastRecord: String?
+        /// Тренировка идёт прямо сейчас — с этого момента.
+        public var activeSince: Date?
+
+        public init(days: [LocalDate], lastTitle: String?, lastDate: LocalDate?, lastRecord: String?, activeSince: Date?) {
+            self.days = days
+            self.lastTitle = lastTitle
+            self.lastDate = lastDate
+            self.lastRecord = lastRecord
+            self.activeSince = activeSince
+        }
+    }
+
+    public struct GoalEntry: Codable, Sendable, Equatable, Identifiable {
+        public var id: UUID
+        public var title: String
+        public var progress: Double
+        public var deadline: LocalDate?
+        public var icon: String?
+
+        public init(id: UUID, title: String, progress: Double, deadline: LocalDate?, icon: String?) {
+            self.id = id
+            self.title = title
+            self.progress = progress
+            self.deadline = deadline
+            self.icon = icon
+        }
+    }
+
+    public struct QuestEntry: Codable, Sendable, Equatable, Identifiable {
+        public var id: UUID
+        /// Текст задания на языке приложения.
+        public var title: String
+        public var isDaily: Bool
+        public var periodEnd: LocalDate
+        public var progress: Int
+        public var target: Int
+        public var reward: Int
+        public var isDone: Bool
+
+        public init(id: UUID, title: String, isDaily: Bool, periodEnd: LocalDate, progress: Int, target: Int, reward: Int, isDone: Bool) {
+            self.id = id
+            self.title = title
+            self.isDaily = isDaily
+            self.periodEnd = periodEnd
+            self.progress = progress
+            self.target = target
+            self.reward = reward
+            self.isDone = isDone
+        }
+    }
+
     public var isSignedIn: Bool
     public var displayName: String?
     public var level: Int
@@ -89,6 +167,12 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
     /// Дни, за которые есть записи в дневнике (последние два месяца).
     public var journalDays: [LocalDate]
     public var busy: [BusySlot]
+    public var finance: FinanceEntry?
+    public var workouts: WorkoutEntry?
+    /// Активные цели.
+    public var goals: [GoalEntry]
+    public var quests: [QuestEntry]
+    public var streakDays: Int
     public var updatedAt: Date
 
     public init(
@@ -103,6 +187,11 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         shopping: [ShoppingEntry] = [],
         journalDays: [LocalDate] = [],
         busy: [BusySlot] = [],
+        finance: FinanceEntry? = nil,
+        workouts: WorkoutEntry? = nil,
+        goals: [GoalEntry] = [],
+        quests: [QuestEntry] = [],
+        streakDays: Int = 0,
         updatedAt: Date = .now
     ) {
         self.isSignedIn = isSignedIn
@@ -116,6 +205,11 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         self.shopping = shopping
         self.journalDays = journalDays
         self.busy = busy
+        self.finance = finance
+        self.workouts = workouts
+        self.goals = goals
+        self.quests = quests
+        self.streakDays = streakDays
         self.updatedAt = updatedAt
     }
 
@@ -135,6 +229,11 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         shopping = try c.decodeIfPresent([ShoppingEntry].self, forKey: .shopping) ?? []
         journalDays = try c.decodeIfPresent([LocalDate].self, forKey: .journalDays) ?? []
         busy = try c.decodeIfPresent([BusySlot].self, forKey: .busy) ?? []
+        finance = try c.decodeIfPresent(FinanceEntry.self, forKey: .finance)
+        workouts = try c.decodeIfPresent(WorkoutEntry.self, forKey: .workouts)
+        goals = try c.decodeIfPresent([GoalEntry].self, forKey: .goals) ?? []
+        quests = try c.decodeIfPresent([QuestEntry].self, forKey: .quests) ?? []
+        streakDays = try c.decodeIfPresent(Int.self, forKey: .streakDays) ?? 0
         updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt) ?? .distantPast
     }
 }
@@ -255,6 +354,29 @@ extension WidgetSnapshot {
             cursor = cursor.adding(days: -1)
         }
         return streak
+    }
+
+    /// Потрачено за день (0, если снимок про другой день).
+    public func spentToday(on day: LocalDate) -> Double {
+        guard let finance, finance.day == day else { return 0 }
+        return finance.spentToday
+    }
+
+    /// Потрачено за месяц этого дня (0, если месяц уже другой).
+    public func spentMonth(on day: LocalDate) -> Double {
+        guard let finance, finance.month.year == day.year, finance.month.month == day.month else { return 0 }
+        return finance.spentMonth
+    }
+
+    /// Тренировок на неделе (пн–вс) этого дня.
+    public func workoutsThisWeek(on day: LocalDate) -> Int {
+        let monday = day.adding(days: -(Weekday.allCases.firstIndex(of: day.weekday) ?? 0))
+        return (workouts?.days ?? []).filter { $0 >= monday && $0 <= day }.count
+    }
+
+    /// Квесты, которые ещё идут в этот день.
+    public func quests(on day: LocalDate) -> [QuestEntry] {
+        quests.filter { $0.periodEnd >= day && (!$0.isDaily || $0.periodEnd == day) }
     }
 
     /// Покупки к показу: невычеркнутые, затем вычеркнутые в виджете.

@@ -24,7 +24,14 @@ def _next_weekday(weekday: int, after: date | None = None) -> date:
 
 
 async def _progress(client: AsyncClient, tokens: dict) -> dict:
-    return (await client.get("/progress", headers=bearer(tokens))).json()
+    """Прогресс без наград за квесты: здесь проверяется опыт за сами действия,
+    квесты — в test_game.py."""
+    progress = (await client.get("/progress", headers=bearer(tokens))).json()
+    quest_xp = sum(q["reward"] for q in progress["quests"] if q["completed_at"])
+    progress["total_xp"] -= quest_xp
+    progress["today_xp"] -= quest_xp
+    progress["recent"] = [e for e in progress["recent"] if e["source_type"] != "quest"]
+    return progress
 
 
 async def _confirm_all(client: AsyncClient, tokens: dict) -> dict:
@@ -129,7 +136,7 @@ async def test_deferred_items_are_filed_when_their_section_appears(
     shopping = (await client.get("/shopping", headers=bearer(tokens))).json()
 
     assert sorted(i["name"] for i in shopping) == ["Молоко", "Хлеб"]
-    # Трата всё ещё ждёт своего раздела.
+    # Трата без суммы ждёт во «Входящих»: сохранить её нечем.
     assert inbox[0]["status"] == "deferred"
     assert len(inbox[0]["created"]) == 2
 

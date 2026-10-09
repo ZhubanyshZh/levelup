@@ -54,7 +54,7 @@ struct QuickCaptureWidgetView: View {
                 tile("Голос", systemImage: "mic.fill", route: .capture(.voice), prominent: true)
                 tile("Текст", systemImage: "keyboard", route: .capture(.text))
                 tile("Дневник", systemImage: "book.fill", route: .newJournalEntry)
-                tile("Покупки", systemImage: "cart.fill", route: .shopping)
+                tile("Трата", systemImage: "creditcard.fill", route: .capture(.expense))
             }
         }
     }

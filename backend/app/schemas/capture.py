@@ -6,9 +6,12 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.schemas.common import HHMM_PATTERN, FactCategory, Priority, Weekday
 from app.schemas.daily import JournalOut, ShoppingIn, ShoppingOut
+from app.schemas.finance import CURRENCY_PATTERN, Category, TransactionOut
+from app.schemas.goals import GoalOut
 from app.schemas.profile import ProfileFactOut, ScheduleData
 from app.schemas.task import Recurrence, TaskOut
 from app.schemas.user import validate_timezone
+from app.schemas.workouts import WorkoutOut
 
 ItemType = Literal[
     "task",
@@ -23,7 +26,10 @@ ItemType = Literal[
     "note",
 ]
 # Типы, которые уже сохраняются в модули. Остальные ждут во «Входящих» своего этапа.
-SUPPORTED_ITEM_TYPES: frozenset[str] = frozenset({"task", "profile_fact", "journal", "shopping"})
+SUPPORTED_ITEM_TYPES: frozenset[str] = frozenset(
+    {"task", "profile_fact", "journal", "shopping", "expense", "income", "workout", "goal"}
+)
+SphereKey = Literal["body", "mind", "finance", "discipline", "balance"]
 
 CaptureSource = Literal["text", "voice", "siri"]
 CaptureStatus = Literal["failed", "parsed", "confirmed", "deferred", "undone"]
@@ -32,6 +38,15 @@ CaptureStatus = Literal["failed", "parsed", "confirmed", "deferred", "undone"]
 class ParsedProduct(BaseModel):
     name: str = Field(description="Product as written on a shopping list, nominative case.")
     quantity: str | None = Field(description='Amount like "2", "1 кг", "6 шт", or null.')
+
+
+class ParsedExercise(BaseModel):
+    name: str = Field(description="Exercise name in the user's language, e.g. «Жим лёжа».")
+    sets: int | None = Field(description="Number of sets, or null if not said (= 1).")
+    reps: int | None = Field(description="Reps per set, or null.")
+    weight_kg: float | None = Field(description="Weight in kg per set, or null.")
+    duration_sec: int | None = Field(description="Duration of one set in seconds, or null.")
+    distance_m: float | None = Field(description="Distance in meters, or null.")
 
 
 class ParsedItem(BaseModel):
@@ -78,6 +93,21 @@ class ParsedItem(BaseModel):
     shopping_list: str | None = Field(
         description="shopping: list or store name if the user named one, else null."
     )
+    amount: float | None = Field(description="expense/income: the amount of money, else null.")
+    currency: str | None = Field(
+        description="expense/income: ISO 4217 code only if the user named a currency, else null."
+    )
+    category: Category | None = Field(description="expense/income: category key, else null.")
+    exercises: list[ParsedExercise] | None = Field(
+        description="workout: every exercise separately, else null."
+    )
+    target_value: float | None = Field(description="goal: numeric target if any, else null.")
+    metric_unit: str | None = Field(
+        description='goal: unit of the target ("км", "кг", "книг"), else null.'
+    )
+    sphere: SphereKey | None = Field(
+        description="task/goal: life sphere the item develops, else null."
+    )
 
 
 class ParseResult(BaseModel):
@@ -92,6 +122,17 @@ class BusyConflict(BaseModel):
     fact_text: str
     start: str
     end: str
+
+
+class ExerciseEntry(BaseModel):
+    """Упражнение в записи о тренировке: «3 подхода по 5 с 80 кг»."""
+
+    name: str = Field(min_length=1, max_length=100)
+    sets: int = Field(default=1, ge=1, le=50)
+    reps: int | None = Field(default=None, ge=0, le=10000)
+    weight_kg: float | None = Field(default=None, ge=0, le=1000)
+    duration_sec: int | None = Field(default=None, ge=0, le=86400)
+    distance_m: float | None = Field(default=None, ge=0, le=1_000_000)
 
 
 class CaptureItem(BaseModel):
@@ -113,6 +154,13 @@ class CaptureItem(BaseModel):
     tags: list[str] = Field(default_factory=list, max_length=10)
     products: list[ShoppingIn] = Field(default_factory=list, max_length=100)
     list_name: str | None = Field(default=None, max_length=100)
+    amount: float | None = Field(default=None, gt=0, le=1_000_000_000_000)
+    currency: str | None = Field(default=None, pattern=CURRENCY_PATTERN)
+    category: Category | None = None
+    exercises: list[ExerciseEntry] = Field(default_factory=list, max_length=50)
+    target_value: float | None = None
+    metric_unit: str | None = Field(default=None, max_length=30)
+    sphere: str | None = Field(default=None, max_length=40)
     include: bool = True
     # Заполняет сервер; присланные клиентом значения пересчитываются.
     supported: bool = False
@@ -120,7 +168,7 @@ class CaptureItem(BaseModel):
 
 
 class CreatedRef(BaseModel):
-    type: Literal["task", "profile_fact", "journal", "shopping"]
+    type: Literal["task", "profile_fact", "journal", "shopping", "transaction", "workout", "goal"]
     id: uuid.UUID
 
 
@@ -169,5 +217,8 @@ class CaptureResult(BaseModel):
     facts: list[ProfileFactOut] = []
     journal: list[JournalOut] = []
     shopping: list[ShoppingOut] = []
+    transactions: list[TransactionOut] = []
+    workouts: list[WorkoutOut] = []
+    goals: list[GoalOut] = []
     # Опыт, полученный при сохранении (например, за запись в дневнике).
     xp_gained: int = 0

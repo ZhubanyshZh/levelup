@@ -7,9 +7,16 @@ struct LevelUpWidgetsBundle: WidgetBundle {
         QuickCaptureWidget()
         TodayWidget()
         LevelWidget()
+        QuestsWidget()
+        GoalWidget()
+        FinanceWidget()
+        WorkoutWidget()
         ShoppingWidget()
         JournalWidget()
+        WorkoutLiveActivity()
         CaptureControl()
+        ExpenseControl()
         JournalControl()
+        WorkoutControl()
     }
 }

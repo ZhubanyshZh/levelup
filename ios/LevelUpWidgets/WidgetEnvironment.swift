@@ -50,6 +50,8 @@ struct SnapshotEntry: TimelineEntry {
     let snapshot: WidgetSnapshot
     var isAppGroupAvailable = true
     var relevance: TimelineEntryRelevance?
+    /// Выбор в настройках виджета: id цели или название списка покупок.
+    var selection: String?
 
     var day: LocalDate { LocalDate(date) }
 }
@@ -80,6 +82,11 @@ struct SnapshotProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SnapshotEntry>) -> Void) {
+        completion(Timeline(entries: entries(), policy: .atEnd))
+    }
+
+    /// Точки перерисовки на сегодня (их же используют настраиваемые виджеты).
+    func entries() -> [SnapshotEntry] {
         let store = Self.store
         let snapshot = store.read()
         let now = Date.now
@@ -101,11 +108,15 @@ struct SnapshotProvider: TimelineProvider {
             dates.insert(midnight)
         }
 
-        let entries = dates.sorted().map { entry(at: $0, snapshot: snapshot, isAvailable: store.isAvailable) }
-        completion(Timeline(entries: entries, policy: .atEnd))
+        return dates.sorted().map { entry(at: $0, snapshot: snapshot, isAvailable: store.isAvailable) }
     }
 
-    private static var store: SnapshotStore {
+    func current() -> SnapshotEntry {
+        let store = Self.store
+        return entry(at: .now, snapshot: store.read(), isAvailable: store.isAvailable)
+    }
+
+    static var store: SnapshotStore {
         SnapshotStore(appGroupID: AppConfig.fromBundle().appGroupID)
     }
 

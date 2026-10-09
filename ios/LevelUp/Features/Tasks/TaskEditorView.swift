@@ -19,6 +19,8 @@ struct TaskEditorView: View {
     @State private var difficulty = 0
     @State private var repeatFrequency: Recurrence.Frequency?
     @State private var repeatDays: Set<Weekday> = []
+    @State private var sphere: String?
+    @State private var goalID: UUID?
     @State private var isSaving = false
     @State private var confirmDelete = false
 
@@ -81,6 +83,20 @@ struct TaskEditorView: View {
                     Text("1 — пара минут, 5 — несколько дней. Пригодится для опыта (XP).")
                 }
 
+                Section {
+                    SpherePicker(selection: $sphere)
+                    if !store.goals.active.isEmpty || goalID != nil {
+                        Picker("Цель", selection: $goalID) {
+                            Text("Без цели").tag(UUID?.none)
+                            ForEach(store.goals.goals.filter { !$0.isDone || $0.id == goalID }) { goal in
+                                Text(goal.title).tag(Optional(goal.id))
+                            }
+                        }
+                    }
+                } footer: {
+                    Text("Опыт за задачу пойдёт в эту сферу.")
+                }
+
                 if task != nil {
                     Section {
                         Button("Удалить задачу", role: .destructive) { confirmDelete = true }
@@ -125,6 +141,8 @@ struct TaskEditorView: View {
         difficulty = task.difficulty ?? 0
         repeatFrequency = task.recurrence?.freq
         repeatDays = Set(task.recurrence?.weekdays ?? [])
+        sphere = task.sphere
+        goalID = task.goalId
     }
 
     private var recurrence: Recurrence? {
@@ -148,6 +166,8 @@ struct TaskEditorView: View {
             updated.remind = hasDate && remind
             updated.difficulty = difficulty == 0 ? nil : difficulty
             updated.recurrence = recurrence
+            updated.sphere = sphere
+            updated.goalId = goalID
             await store.tasks.save(updated)
             dismiss()
         } else {
@@ -160,7 +180,9 @@ struct TaskEditorView: View {
                 dueTime: dueTime,
                 remind: hasDate && remind,
                 difficulty: difficulty == 0 ? nil : difficulty,
-                recurrence: recurrence
+                recurrence: recurrence,
+                sphere: sphere,
+                goalId: goalID
             )
             if await store.tasks.create(draft) {
                 dismiss()

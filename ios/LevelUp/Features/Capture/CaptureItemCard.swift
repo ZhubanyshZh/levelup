@@ -69,6 +69,12 @@ struct CaptureItemCard: View {
                 }
             case .shopping:
                 ShoppingFields(item: $item)
+            case .expense, .income:
+                MoneyFields(item: $item)
+            case .workout:
+                WorkoutFields(item: $item)
+            case .goal:
+                GoalFields(item: item)
             default:
                 Label("Этот раздел появится позже — запись подождёт во «Входящих».", systemImage: "clock")
                     .font(.footnote)
@@ -228,5 +234,107 @@ private struct ShoppingFields: View {
                 .font(.subheadline)
             }
         }
+    }
+}
+
+private struct MoneyFields: View {
+    @Binding var item: CaptureItem
+    @Environment(AppStore.self) private var store
+
+    private var categories: [MoneyCategory] {
+        item.kind == .income ? MoneyCategory.incomes : MoneyCategory.expenses
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                TextField("Сумма", value: $item.amount, format: .number)
+                    .keyboardType(.decimalPad)
+                    .font(.title3.bold())
+                Text(verbatim: item.currency ?? store.finance.summary?.currency ?? "KZT")
+                    .foregroundStyle(.secondary)
+            }
+            Menu {
+                Picker("Категория", selection: Binding(
+                    get: { MoneyCategory(rawValue: item.category ?? "") ?? categories.last! },
+                    set: { item.category = $0.rawValue }
+                )) {
+                    ForEach(categories) { category in
+                        Label(category.title, systemImage: category.symbol).tag(category)
+                    }
+                }
+            } label: {
+                CategoryLabel(key: item.category ?? categories.last!.rawValue)
+                    .font(.footnote)
+            }
+            .buttonStyle(.bordered)
+            if item.amount == nil {
+                Text("Укажи сумму — без неё трата подождёт во «Входящих».")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+        }
+    }
+}
+
+private struct WorkoutFields: View {
+    @Binding var item: CaptureItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(item.exercises.indices, id: \.self) { index in
+                let exercise = item.exercises[index]
+                HStack {
+                    Image(systemName: "figure.strengthtraining.traditional")
+                        .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(exercise.name)
+                        Text(summary(exercise))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Button {
+                        item.exercises.remove(at: index)
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Убрать упражнение"))
+                }
+                .font(.subheadline)
+            }
+            if item.exercises.isEmpty {
+                Text("Упражнения не распознаны — запись подождёт во «Входящих».")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+        }
+    }
+
+    private func summary(_ exercise: ExerciseEntry) -> String {
+        let set = WorkoutFormat.set(SetInput(exercise: exercise.name, weightKg: exercise.weightKg, reps: exercise.reps, durationSec: exercise.durationSec, distanceM: exercise.distanceM))
+        return exercise.sets > 1 ? String(localized: "\(exercise.sets) подх. · \(set)") : set
+    }
+}
+
+private struct GoalFields: View {
+    let item: CaptureItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if let target = item.targetValue {
+                let number = target.formatted(.number.precision(.fractionLength(0...2)))
+                Label(item.metricUnit.map { "\(number) \($0)" } ?? number, systemImage: "target")
+            }
+            if let deadline = item.dueDate {
+                Label(deadline.date().formatted(date: .long, time: .omitted), systemImage: "calendar")
+            }
+            Text("Шаг к цели — 100 XP, цель достигнута — 500 XP.")
+                .foregroundStyle(.tertiary)
+        }
+        .font(.footnote)
+        .foregroundStyle(.secondary)
     }
 }

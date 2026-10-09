@@ -5,7 +5,8 @@ import Observation
 /// Виджеты передают маршрут ссылкой `levelup://…`, кнопки и Siri — через RouteCenter.
 public enum AppRoute: Hashable, Sendable {
     public enum CaptureMode: String, Sendable {
-        case voice, text
+        /// expense — сразу слушать, подсказка «сколько и на что».
+        case voice, text, expense
     }
 
     case capture(CaptureMode)
@@ -13,6 +14,12 @@ public enum AppRoute: Hashable, Sendable {
     case journal
     case shopping
     case today
+    case finance
+    /// Тренировка: продолжить текущую или начать новую.
+    case workout
+    case goals
+    case goal(UUID)
+    case progress
 
     public static let scheme = "levelup"
 
@@ -32,6 +39,17 @@ public enum AppRoute: Hashable, Sendable {
             components.host = "shopping"
         case .today:
             components.host = "today"
+        case .finance:
+            components.host = "finance"
+        case .workout:
+            components.host = "workout"
+        case .goals:
+            components.host = "goals"
+        case .goal(let id):
+            components.host = "goals"
+            components.path = "/" + id.uuidString
+        case .progress:
+            components.host = "progress"
         }
         return components.url!
     }
@@ -50,6 +68,15 @@ public enum AppRoute: Hashable, Sendable {
             self = .shopping
         case "today":
             self = .today
+        case "finance":
+            self = .finance
+        case "workout":
+            self = .workout
+        case "goals":
+            let id = components.path.split(separator: "/").first.flatMap { UUID(uuidString: String($0)) }
+            self = id.map(AppRoute.goal) ?? .goals
+        case "progress":
+            self = .progress
         default:
             return nil
         }

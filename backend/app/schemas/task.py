@@ -27,6 +27,8 @@ class TaskCreate(BaseModel):
     difficulty: int | None = Field(default=None, ge=1, le=5)
     recurrence: Recurrence | None = None
     position: float | None = None
+    sphere: str | None = Field(default=None, max_length=40)
+    goal_id: uuid.UUID | None = None
 
 
 class TaskUpdate(BaseModel):
@@ -42,6 +44,8 @@ class TaskUpdate(BaseModel):
     difficulty: int | None = Field(default=None, ge=1, le=5)
     recurrence: Recurrence | None = None
     position: float | None = None
+    sphere: str | None = Field(default=None, max_length=40)
+    goal_id: uuid.UUID | None = None
 
 
 class TaskOut(BaseModel):
@@ -61,6 +65,8 @@ class TaskOut(BaseModel):
     reminders: list[datetime] = []
     recurrence: Recurrence | None
     difficulty: int | None
+    sphere: str | None = None
+    goal_id: uuid.UUID | None = None
     position: float
     completed_at: datetime | None
     capture_id: uuid.UUID | None

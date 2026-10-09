@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app import __version__
-from app.api.routes import ai, auth, captures, daily, health, me, profile, tasks
+from app.api.routes import ai, auth, captures, daily, health, me, modules, profile, tasks
 from app.core.config import get_settings
 from app.core.errors import AppError, app_error_handler
 from app.db.session import get_engine
@@ -37,7 +37,10 @@ def create_app() -> FastAPI:
     app.include_router(captures.router)
     app.include_router(daily.journal)
     app.include_router(daily.shopping)
-    app.include_router(daily.progress)
+    app.include_router(modules.finance_router)
+    app.include_router(modules.workouts_router)
+    app.include_router(modules.goals_router)
+    app.include_router(modules.game_router)
     return app
 
 

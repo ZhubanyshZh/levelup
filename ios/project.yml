@@ -68,6 +68,8 @@ targets:
         NSSpeechRecognitionUsageDescription: Распознавание речи превращает твой голос в текст записи.
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
+        # Live Activity тренировки: упражнение и таймер отдыха на экране блокировки.
+        NSSupportsLiveActivities: true
     entitlements:
       path: LevelUp/LevelUp.entitlements
       properties:

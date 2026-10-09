@@ -61,6 +61,26 @@
         }
       }
     },
+    "Запиши трату в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log an expense in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Начни тренировку в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a workout in ${applicationName}"
+          }
+        }
+      }
+    },
     "Новая запись в ${applicationName}": {
       "localizations": {
         "en": {

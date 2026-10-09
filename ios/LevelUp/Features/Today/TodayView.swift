@@ -5,6 +5,8 @@ struct TodayView: View {
     let onCapture: () -> Void
 
     @Environment(AppStore.self) private var store
+    @State private var isTraining = false
+    @State private var isAddingExpense = false
     @Environment(SessionStore.self) private var session
     @State private var editing: TaskItem?
     @State private var isWritingJournal = false
@@ -18,6 +20,51 @@ struct TodayView: View {
                         ProgressDetailView()
                     } label: {
                         LevelCard(progress: store.progress.progress)
+                    }
+                }
+
+                if store.workouts.active != nil {
+                    Section {
+                        Button {
+                            isTraining = true
+                        } label: {
+                            Label("Идёт тренировка — продолжить", systemImage: "figure.strengthtraining.traditional")
+                                .font(.headline)
+                        }
+                    }
+                }
+
+                let quests = store.progress.progress.quests
+                if !quests.isEmpty {
+                    Section {
+                        ForEach(quests) { QuestRow(quest: $0) }
+                    } header: {
+                        Text("Квесты")
+                    }
+                }
+
+                if let summary = store.finance.summary, store.finance.isCurrentMonth {
+                    Section {
+                        HStack {
+                            NavigationLink {
+                                FinanceView()
+                            } label: {
+                                LabeledContent {
+                                    Text(Money.text(summary.spentToday, currency: summary.currency))
+                                        .monospacedDigit()
+                                } label: {
+                                    Label("Потрачено сегодня", systemImage: "creditcard")
+                                }
+                            }
+                            Button {
+                                isAddingExpense = true
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.title3)
+                            }
+                            .buttonStyle(.borderless)
+                            .accessibilityLabel(Text("Новая трата"))
+                        }
                     }
                 }
 
@@ -73,6 +120,12 @@ struct TodayView: View {
             }
             .sheet(isPresented: $isWritingJournal) {
                 JournalEditorView(entry: nil)
+            }
+            .sheet(isPresented: $isAddingExpense) {
+                TransactionEditorView(row: nil)
+            }
+            .fullScreenCover(isPresented: $isTraining) {
+                ActiveWorkoutView()
             }
             .overlay(alignment: .bottom) {
                 ErrorBanner(message: $tasks.errorMessage)

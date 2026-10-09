@@ -87,6 +87,11 @@ class Task(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
     # Повтор: {"freq": "daily" | "weekly" | "monthly", "weekdays": ["MON"], "monthday": 15}.
     # У повторяющейся задачи due_date — ближайший раз; после выполнения она сдвигается вперёд.
     recurrence: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    # Сфера жизни, в которую идёт опыт (оценивает ИИ или пользователь).
+    sphere: Mapped[str | None] = mapped_column(String(40))
+    goal_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("goals.id", ondelete="SET NULL"), index=True
+    )
     capture_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("captures.id", ondelete="SET NULL")
     )
