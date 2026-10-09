@@ -176,6 +176,16 @@ struct GoalDetailView: View {
                 }
             }
 
+            if !goal.isDone {
+                Section {
+                    NavigationLink {
+                        CoachGoalView(goalID: goal.id)
+                    } label: {
+                        Label("Разбить цель с ИИ", systemImage: "sparkles")
+                    }
+                }
+            }
+
             Section("Шаги") {
                 ForEach(goal.steps) { step in
                     Button {

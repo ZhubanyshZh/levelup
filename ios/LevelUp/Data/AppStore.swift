@@ -15,8 +15,12 @@ final class AppStore {
     let progress: ProgressStore
     let finance: FinanceStore
     let workouts: WorkoutStore
+    let coach: CoachStore
     let goals: GoalStore
     private let reminders = ReminderScheduler()
+    private let coachReminders = CoachReminderScheduler()
+    private var isRefreshing = false
+    private var isReset = false
     private let api: APIClient
     private let widgets: WidgetPublisher
     /// Имя для виджетов — берётся из профиля, который знает SessionStore.
@@ -41,11 +45,13 @@ final class AppStore {
         finance = FinanceStore(api: api)
         workouts = WorkoutStore(api: api)
         goals = GoalStore(api: api)
+        coach = CoachStore(api: api)
 
         tasks.onUnauthorized = onUnauthorized
         finance.onUnauthorized = onUnauthorized
         workouts.onUnauthorized = onUnauthorized
         goals.onUnauthorized = onUnauthorized
+        coach.onUnauthorized = onUnauthorized
         captures.onUnauthorized = onUnauthorized
         profile.onUnauthorized = onUnauthorized
         ai.onUnauthorized = onUnauthorized
@@ -64,7 +70,10 @@ final class AppStore {
         tasks.onChange = publish
         shopping.onChange = publish
         journal.onChange = publish
-        profile.onChange = publish
+        profile.onChange = { [weak self] in
+            publish()
+            self?.syncCoachReminders()
+        }
         finance.onChange = publish
         workouts.onChange = publish
         goals.onChange = publish
@@ -72,6 +81,9 @@ final class AppStore {
     }
 
     func refreshAll() async {
+        guard !isRefreshing && !isReset else { return }
+        isRefreshing = true
+        defer { isRefreshing = false }
         // Сначала отметки, сделанные в виджетах без приложения, — иначе загрузка их затрёт.
         await WidgetActionSender.flush(api: api, store: widgets.pending)
         // Затем «Входящие»: сервер заодно раскладывает записи, ждавшие своих разделов.
@@ -85,9 +97,37 @@ final class AppStore {
         async let financeLoaded: Void = finance.load()
         async let workoutsLoaded: Void = workouts.load()
         async let goalsLoaded: Void = goals.load()
+        async let coachLoaded: Void = coach.load()
         _ = await (tasksLoaded, factsLoaded, aiLoaded, journalLoaded, shoppingLoaded, progressLoaded)
-        _ = await (financeLoaded, workoutsLoaded, goalsLoaded)
+        _ = await (financeLoaded, workoutsLoaded, goalsLoaded, coachLoaded)
         await captures.flushOutbox()
+        guard !isReset else { return }
+        syncCoachReminders()
+        if UserDefaults.standard.bool(forKey: "coachAutomatic"), ai.settings?.activeProvider != nil {
+            let kind = CoachKind.current()
+            if coach.report(kind) == nil { await coach.generate(kind) }
+            if LocalDate.today().weekday == .mon, coach.report(.weekly) == nil { await coach.generate(.weekly) }
+        }
+    }
+
+    func configureCoachReminders(_ enabled: Bool) async -> Bool {
+        if enabled {
+            let allowed = await coachReminders.authorize()
+            if !allowed {
+                coach.errorMessage = String(localized: "Разреши уведомления: Настройки → Level Up.")
+                return false
+            }
+        }
+        syncCoachReminders()
+        return true
+    }
+
+    private func syncCoachReminders() {
+        guard !isReset else { return }
+        let enabled = UserDefaults.standard.bool(forKey: "coachReminders")
+        reminders.reservedSlots = enabled ? 15 : 0
+        reminders.sync(tasks.tasks)
+        coachReminders.sync(enabled: enabled, facts: profile.facts)
     }
 
     /// Применяет результат подтверждённой записи сразу, без полной перезагрузки.
@@ -151,6 +191,7 @@ final class AppStore {
     }
 
     func reset() {
+        isReset = true
         tasks.reset()
         captures.reset()
         profile.reset()
@@ -161,6 +202,10 @@ final class AppStore {
         finance.reset()
         workouts.reset()
         goals.reset()
+        coach.reset()
+        coachReminders.clear()
+        UserDefaults.standard.removeObject(forKey: "coachAutomatic")
+        UserDefaults.standard.removeObject(forKey: "coachReminders")
         LocalCache<[TaskItem]>.clearAll()
     }
 }

@@ -13,6 +13,14 @@ enum ErrorText {
             String(localized: "Вход через Google не настроен на сервере.")
         case .server(status: 409, code: "identity_in_use"):
             String(localized: "Этот Google-аккаунт уже привязан к другому профилю Level Up.")
+        case .server(_, "coach_busy_conflict"):
+            String(localized: "Время занято. Выбери «Добавить без времени».")
+        case .server(_, "coach_plan_expired"):
+            String(localized: "Время уже прошло. Выбери «Добавить без времени».")
+        case .server(_, "coach_task_changed"):
+            String(localized: "Эта задача уже выполнена. Открой свежий план.")
+        case .server(_, "coach_goal_completed"):
+            String(localized: "Цель уже завершена.")
         case .server(_, let code?) where code.hasPrefix("ai_"):
             capture(code)
         default:

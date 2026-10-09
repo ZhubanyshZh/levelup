@@ -255,3 +255,26 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 
     override func stopLoading() {}
 }
+
+
+extension APIClientTests {
+    @Test func coachQuestionSendsStableRequestIdentifier() async throws {
+        let requestID = UUID()
+        MockURLProtocol.handler = { request in
+            #expect(request.url?.path == "/coach/questions")
+            #expect(request.httpMethod == "POST")
+            let body = try #require(MockURLProtocol.bodyJSON(request))
+            #expect(body["request_id"] as? String == requestID.uuidString)
+            #expect(body["text"] as? String == "Траты?")
+            return (200, Data("""
+                {"id":"11111111-1111-1111-1111-111111111111","capture_id":"22222222-2222-2222-2222-222222222222",
+                 "question":"Траты?","metric":"expense","start_date":"2026-10-01","end_date":"2026-10-12",
+                 "value":1700,"currency":"KZT","explanation":"Кафе за октябрь"}
+                """.utf8))
+        }
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+        let answer = try await client.askCoach("Траты?", requestID: requestID)
+        #expect(answer.value == 1700)
+        #expect(answer.currency == "KZT")
+    }
+}

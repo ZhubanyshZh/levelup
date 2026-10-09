@@ -290,14 +290,18 @@ struct CaptureSheet: View {
     private func deferredView(_ capture: Capture) -> some View {
         List {
             Section {
-                Text("Эти записи появятся в своих разделах, когда разделы будут готовы. Пока они ждут здесь.")
+                Text("Вопросы можно задать коучу. Остальные записи ждут здесь, пока ты их разберёшь.")
                     .foregroundStyle(.secondary)
             }
-            ForEach(capture.items.filter { $0.include && !$0.supported }) { item in
-                Label {
-                    Text(item.title)
-                } icon: {
-                    Image(systemName: item.kind?.symbol ?? "tray")
+            ForEach(Array(capture.items.enumerated()), id: \.offset) { index, item in
+                if item.include && !item.supported {
+                    if item.kind == .question {
+                        NavigationLink {
+                            CoachQuestionView(initialText: [item.title, item.details].compactMap { $0 }.joined(separator: " "), captureID: capture.id, questionIndex: index)
+                        } label: { Label(item.title, systemImage: "questionmark.bubble") }
+                    } else {
+                        Label(item.title, systemImage: item.kind?.symbol ?? "tray")
+                    }
                 }
             }
             Section {

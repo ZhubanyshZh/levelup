@@ -15,6 +15,7 @@ enum MainSheet: Identifiable, Hashable {
     case goals
     case goal(UUID)
     case progress
+    case coach(CoachKind)
 
     var id: Self { self }
 }
@@ -70,6 +71,8 @@ struct MainTabView: View {
                 closable { GoalDetailView(goalID: id) }
             case .progress:
                 closable { ProgressDetailView() }
+            case .coach(let kind):
+                closable { CoachView(kind: kind) }
             }
         }
         .overlay(alignment: .top) {
@@ -136,6 +139,8 @@ struct MainTabView: View {
             present(.goal(id))
         case .progress:
             present(.progress)
+        case .coach(let kind):
+            present(.coach(kind))
         }
     }
 

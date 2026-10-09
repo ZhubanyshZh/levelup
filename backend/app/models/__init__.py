@@ -1,4 +1,5 @@
 from app.models.assistant import AICredential, Capture, ProfileFact, Task
+from app.models.coach import CoachAnswer, CoachReport
 from app.models.daily import JournalEntry, ShoppingItem, XPEvent
 from app.models.finance import Budget, Transaction
 from app.models.fitness import Workout, WorkoutSet
@@ -12,6 +13,8 @@ __all__ = [
     "AuthProvider",
     "Budget",
     "Capture",
+    "CoachAnswer",
+    "CoachReport",
     "Goal",
     "GoalStep",
     "JournalEntry",

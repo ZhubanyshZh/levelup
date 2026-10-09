@@ -342,6 +342,31 @@ public actor APIClient {
         }
     }
 
+    // MARK: - ИИ-коуч
+
+    public func coachReports() async throws -> [CoachReport] {
+        try await sendAuthorized(Request(method: "GET", path: "coach/reports"))
+    }
+
+    public func generateCoachReport(_ kind: CoachKind, goalID: UUID? = nil) async throws -> CoachReport {
+        struct Body: Encodable { let goalId: UUID? }
+        return try await sendAuthorized(Request(method: "POST", path: "coach/reports/\(kind.rawValue)", body: encoder.encode(Body(goalId: goalID)), timeout: 75))
+    }
+
+    public func applyCoachAction(reportID: UUID, actionID: UUID, unscheduled: Bool = false) async throws -> CoachAppliedAction {
+        struct Body: Encodable { let actionId: UUID; let unscheduled: Bool }
+        return try await sendAuthorized(Request(method: "POST", path: "coach/reports/\(reportID.uuidString)/apply", body: encoder.encode(Body(actionId: actionID, unscheduled: unscheduled))))
+    }
+
+    public func coachAnswers() async throws -> [CoachAnswer] {
+        try await sendAuthorized(Request(method: "GET", path: "coach/questions"))
+    }
+
+    public func askCoach(_ text: String, captureID: UUID? = nil, questionIndex: Int? = nil, requestID: UUID? = nil, source: CaptureSource = .text) async throws -> CoachAnswer {
+        struct Body: Encodable { let text: String; let captureId: UUID?; let questionIndex: Int?; let requestId: UUID?; let source: CaptureSource }
+        return try await sendAuthorized(Request(method: "POST", path: "coach/questions", body: encoder.encode(Body(text: text, captureId: captureID, questionIndex: questionIndex, requestId: requestID, source: source)), timeout: 75))
+    }
+
     // MARK: - Транспорт
 
     private func sendAuthorized<T: Decodable>(_ request: Request) async throws -> T {

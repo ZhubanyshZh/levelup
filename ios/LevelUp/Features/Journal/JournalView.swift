@@ -139,6 +139,7 @@ private struct MoodStrip: View {
 
 struct JournalEditorView: View {
     let entry: JournalEntry?
+    var prompt: String? = nil
 
     @Environment(AppStore.self) private var store
     @Environment(\.dismiss) private var dismiss
@@ -153,6 +154,9 @@ struct JournalEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
+                if let prompt {
+                    Section { Text(prompt).font(.headline) }
+                }
                 Section {
                     DatePicker("Дата", selection: $date, in: ...Date.now, displayedComponents: .date)
                 }

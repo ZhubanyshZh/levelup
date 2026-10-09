@@ -20,6 +20,7 @@ public enum AppRoute: Hashable, Sendable {
     case goals
     case goal(UUID)
     case progress
+    case coach(CoachKind)
 
     public static let scheme = "levelup"
 
@@ -50,6 +51,9 @@ public enum AppRoute: Hashable, Sendable {
             components.path = "/" + id.uuidString
         case .progress:
             components.host = "progress"
+        case .coach(let kind):
+            components.host = "coach"
+            components.queryItems = [URLQueryItem(name: "kind", value: kind.rawValue)]
         }
         return components.url!
     }
@@ -77,6 +81,9 @@ public enum AppRoute: Hashable, Sendable {
             self = id.map(AppRoute.goal) ?? .goals
         case "progress":
             self = .progress
+        case "coach":
+            let kind = components.queryItems?.first { $0.name == "kind" }?.value
+            self = .coach(kind.flatMap(CoachKind.init(rawValue:)) ?? .current())
         default:
             return nil
         }

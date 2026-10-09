@@ -5,6 +5,7 @@ import SwiftUI
 struct InboxView: View {
     @Environment(AppStore.self) private var store
     @State private var opened: Capture?
+    @State private var questionCapture: Capture?
 
     var body: some View {
         let captures = store.captures
@@ -35,7 +36,9 @@ struct InboxView: View {
                 Section {
                     ForEach(captures.inbox) { capture in
                         Button {
-                            opened = capture
+                            if capture.items.contains(where: { $0.kind == .question && $0.include }) {
+                                questionCapture = capture
+                            } else { opened = capture }
                         } label: {
                             InboxRow(capture: capture)
                         }
@@ -62,6 +65,16 @@ struct InboxView: View {
         .refreshable { await captures.loadInbox() }
         .task { await captures.loadInbox() }
         .sheet(item: $opened) { CaptureSheet(initialCapture: $0) }
+        .sheet(item: $questionCapture) { capture in
+            let index = capture.items.firstIndex { $0.kind == .question && $0.include }
+            let item = index.map { capture.items[$0] }
+            NavigationStack {
+                CoachQuestionView(initialText: capture.status == .failed ? capture.text : item.map { [$0.title, $0.details].compactMap { $0 }.joined(separator: " ") }, captureID: capture.id, questionIndex: index)
+                    .toolbar { ToolbarItem(placement: .cancellationAction) {
+                        Button("Готово") { questionCapture = nil }
+                    } }
+            }
+        }
     }
 }
 

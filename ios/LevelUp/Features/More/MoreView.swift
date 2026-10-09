@@ -92,6 +92,11 @@ struct MoreView: View {
 
                 Section("ИИ и голос") {
                     NavigationLink {
+                        CoachView()
+                    } label: {
+                        Label("ИИ-коуч", systemImage: "sparkles.rectangle.stack")
+                    }
+                    NavigationLink {
                         AISettingsView()
                     } label: {
                         LabeledContent {

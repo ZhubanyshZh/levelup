@@ -9,6 +9,8 @@ final class ReminderScheduler {
     /// iOS хранит не больше 64 запланированных уведомлений на приложение.
     private static let limit = 60
 
+    var reservedSlots = 0
+
     private var syncTask: Task<Void, Never>?
 
     func sync(_ tasks: [TaskItem]) {
@@ -20,7 +22,7 @@ final class ReminderScheduler {
                 task.reminders.filter { $0 > now }.map { (id: task.id, title: task.title, at: $0) }
             }
             .sorted { $0.at < $1.at }
-            .prefix(Self.limit)
+            .prefix(max(0, Self.limit - reservedSlots))
 
         syncTask?.cancel()
         syncTask = Task {
@@ -66,6 +68,12 @@ final class ReminderScheduler {
 
 /// Показывать напоминания и тогда, когда приложение открыто.
 final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        guard let raw = response.notification.request.content.userInfo["route"] as? String,
+              let url = URL(string: raw), let route = AppRoute(url: url) else { return }
+        await MainActor.run { RouteCenter.shared.open(route) }
+    }
+
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification

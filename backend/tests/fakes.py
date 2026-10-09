@@ -46,7 +46,8 @@ def parsed(type: str = "task", title: str = "Позвонить в банк", **
 class FakeAI:
     """Подменяет провайдеров ИИ в тестах и запоминает, с чем их вызвали."""
 
-    result: ParseResult = field(default_factory=lambda: ParseResult(items=[], reply="Ок"))
+    result: BaseModel = field(default_factory=lambda: ParseResult(items=[], reply="Ок"))
+    responses: list[BaseModel] = field(default_factory=list)
     error: str | None = None
     models: list[str] = field(default_factory=lambda: [DEFAULT_MODELS["gemini"], "gemini-x"])
     calls: list[dict[str, Any]] = field(default_factory=list)
@@ -74,7 +75,8 @@ class _FakeProvider:
         )
         if self.fake.error:
             raise AIError(self.fake.error)
-        return schema.model_validate(self.fake.result.model_dump())
+        result = self.fake.responses.pop(0) if self.fake.responses else self.fake.result
+        return schema.model_validate(result.model_dump())
 
     async def list_models(self) -> list[str]:
         if self.fake.error:

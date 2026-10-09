@@ -23,6 +23,22 @@ struct TodayView: View {
                     }
                 }
 
+                Section {
+                    NavigationLink {
+                        CoachView()
+                    } label: {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Label("ИИ-коуч", systemImage: "sparkles")
+                                .font(.headline)
+                            Text(store.coach.report(CoachKind.current())?.message ?? String(localized: "План дня, вечерний вопрос и обзор недели"))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+
                 if store.workouts.active != nil {
                     Section {
                         Button {
