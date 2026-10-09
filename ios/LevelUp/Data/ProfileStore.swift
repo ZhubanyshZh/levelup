@@ -12,6 +12,8 @@ final class ProfileStore {
     private let api: APIClient
     private let cache = LocalCache<[ProfileFact]>(name: "facts")
     var onUnauthorized: () -> Void = {}
+    /// Любое изменение данных — например, чтобы обновить виджеты.
+    var onChange: () -> Void = {}
 
     init(api: APIClient) {
         self.api = api
@@ -80,6 +82,7 @@ final class ProfileStore {
     private func replaceAll(_ newFacts: [ProfileFact]) {
         facts = newFacts
         cache.save(newFacts)
+        onChange()
     }
 
     private func report(_ error: Error) {

@@ -13,6 +13,8 @@ final class TaskStore {
     private let reminders: ReminderScheduler
     private let cache = LocalCache<[TaskItem]>(name: "tasks")
     var onUnauthorized: () -> Void = {}
+    /// Любое изменение данных — например, чтобы обновить виджеты.
+    var onChange: () -> Void = {}
     /// Выполнение и отмена выполнения меняют опыт.
     var onProgressChange: () -> Void = {}
 
@@ -125,6 +127,7 @@ final class TaskStore {
         tasks = newTasks
         cache.save(newTasks)
         reminders.sync(newTasks)
+        onChange()
     }
 
     private func report(_ error: Error) {

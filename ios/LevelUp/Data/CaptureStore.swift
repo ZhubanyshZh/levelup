@@ -60,7 +60,11 @@ final class CaptureStore {
     }
 
     func undo(_ capture: Capture) async throws {
-        _ = try await api.undoCapture(id: capture.id)
+        try await undo(id: capture.id)
+    }
+
+    func undo(id: UUID) async throws {
+        _ = try await api.undoCapture(id: id)
         await loadInbox()
     }
 

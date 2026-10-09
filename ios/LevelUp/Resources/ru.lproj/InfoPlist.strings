@@ -1,0 +1,6 @@
+/* Тексты системных запросов. Папка ru.lproj нужна ещё и затем, чтобы iOS знала,
+   что у приложения есть русский: иначе окна Siri и команд показываются по-английски. */
+"CFBundleDisplayName" = "Level Up";
+"NSMicrophoneUsageDescription" = "Микрофон нужен, чтобы записывать задачи и мысли голосом.";
+"NSSpeechRecognitionUsageDescription" = "Распознавание речи превращает твой голос в текст записи.";
+"NSLocalNetworkUsageDescription" = "Level Up подключается к серверу разработки в локальной сети.";

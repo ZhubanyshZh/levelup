@@ -17,6 +17,8 @@ final class JournalStore {
     private let api: APIClient
     private let cache = LocalCache<[JournalEntry]>(name: "journal")
     var onUnauthorized: () -> Void = {}
+    /// Любое изменение данных — например, чтобы обновить виджеты.
+    var onChange: () -> Void = {}
     /// Запись в дневнике может принести опыт.
     var onProgressChange: () -> Void = {}
 
@@ -105,6 +107,7 @@ final class JournalStore {
     private func replaceAll(_ newEntries: [JournalEntry]) {
         entries = newEntries
         cache.save(newEntries)
+        onChange()
     }
 
     private func report(_ error: Error) {

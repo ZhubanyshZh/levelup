@@ -64,6 +64,11 @@ public actor APIClient {
         try await sendAuthorized(Request(method: "PATCH", path: "tasks/\(id.uuidString)", body: encoder.encode(update)))
     }
 
+    /// Только статус — для отметки из виджета, где нет остальных полей задачи.
+    public func setTaskStatus(id: UUID, status: TaskStatus) async throws -> TaskItem {
+        try await sendAuthorized(Request(method: "PATCH", path: "tasks/\(id.uuidString)", body: encoder.encode(["status": status])))
+    }
+
     public func deleteTask(id: UUID) async throws {
         try await sendAuthorizedEmpty(Request(method: "DELETE", path: "tasks/\(id.uuidString)"))
     }
@@ -143,6 +148,11 @@ public actor APIClient {
 
     public func updateShopping(id: UUID, _ update: ShoppingUpdate) async throws -> ShoppingItem {
         try await sendAuthorized(Request(method: "PATCH", path: "shopping/\(id.uuidString)", body: encoder.encode(update)))
+    }
+
+    /// Только «куплено» — для отметки из виджета.
+    public func setShoppingBought(id: UUID, isBought: Bool) async throws -> ShoppingItem {
+        try await sendAuthorized(Request(method: "PATCH", path: "shopping/\(id.uuidString)", body: encoder.encode(["is_bought": isBought])))
     }
 
     public func deleteShopping(id: UUID) async throws {

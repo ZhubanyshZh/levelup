@@ -5,7 +5,7 @@ import UserNotifications
 
 @main
 struct LevelUpApp: App {
-    @State private var session = SessionStore(config: .fromBundle())
+    private let session = AppEnvironment.session
     private let notificationPresenter = NotificationPresenter()
 
     init() {
@@ -17,11 +17,23 @@ struct LevelUpApp: App {
             RootView()
                 .environment(session)
                 .onOpenURL { url in
-                    _ = GIDSignIn.sharedInstance.handle(url)
+                    // Ссылки из виджетов — наши, остальное — ответ входа через Google.
+                    if let route = AppRoute(url: url) {
+                        RouteCenter.shared.open(route)
+                    } else {
+                        _ = GIDSignIn.sharedInstance.handle(url)
+                    }
                 }
                 .task { await session.restore() }
         }
     }
+}
+
+/// Общее для экранов и интентов Siri: интент может выполниться, когда приложение запущено
+/// в фоне и ни один экран ещё не создан.
+@MainActor
+enum AppEnvironment {
+    static let session = SessionStore(config: .fromBundle())
 }
 
 struct RootView: View {

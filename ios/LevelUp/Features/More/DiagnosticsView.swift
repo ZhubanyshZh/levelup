@@ -12,7 +12,7 @@ struct DiagnosticsView: View {
             StatusRow(
                 title: "Виджеты (App Group)",
                 detail: session.config.appGroupID,
-                status: session.snapshots.isAvailable ? .ok : .failed
+                status: SnapshotStore(appGroupID: session.config.appGroupID).isAvailable ? .ok : .failed
             )
         }
         .navigationTitle("Проверка связи")

@@ -97,6 +97,47 @@ struct APIClientTests {
         try await client.deleteTask(id: UUID(uuidString: "9b2b1d7c-6a0e-4a43-9a52-0f3c7c1f6f10")!)
     }
 
+    @Test func widgetCheckSendsOnlyStatus() async throws {
+        MockURLProtocol.handler = { request in
+            #expect(request.httpMethod == "PATCH")
+            let body = try #require(MockURLProtocol.bodyJSON(request))
+            #expect(body.keys.sorted() == ["status"])
+            #expect(body["status"] as? String == "done")
+            return (200, Fixtures.task)
+        }
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+
+        let task = try await client.setTaskStatus(id: UUID(), status: .done)
+
+        #expect(task.title == "Отчёт")
+    }
+
+    @Test func pendingWidgetActionsStayQueuedWithoutNetwork() async throws {
+        MockURLProtocol.handler = { _ in throw URLError(.notConnectedToInternet) }
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+        let directory = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        let store = PendingActionStore(file: AppGroupFile(directory: directory, name: "actions.json"))
+        store.add(.task(id: UUID(), done: true))
+        store.add(.shopping(id: UUID(), bought: true))
+
+        let outcome = await WidgetActionSender.flush(api: client, store: store)
+
+        #expect(outcome.sent == 0)
+        #expect(outcome.waiting == 2)
+        #expect(store.all().count == 2)
+    }
+
+    @Test func latestWidgetActionForItemWins() {
+        let directory = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        let store = PendingActionStore(file: AppGroupFile(directory: directory, name: "actions.json"))
+        let id = UUID()
+
+        store.add(.task(id: id, done: true))
+        store.add(.task(id: id, done: false))
+
+        #expect(store.all() == [.task(id: id, done: false)])
+    }
+
     private func makeClient(_ store: InMemoryTokenStore) -> APIClient {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
@@ -115,6 +156,14 @@ private enum Fixtures {
     {"token_type":"bearer","access_token":"access-1","access_expires_at":"2099-01-01T00:00:00Z",
      "refresh_token":"refresh-1","refresh_expires_at":"2099-06-01T00:00:00Z","is_new_user":true,
      "user":\(String(decoding: user, as: UTF8.self))}
+    """.utf8)
+
+    static let task = Data("""
+    {"id":"9b2b1d7c-6a0e-4a43-9a52-0f3c7c1f6f10","title":"Отчёт","notes":null,
+     "status":"done","priority":"normal","due_date":null,"due_time":null,"remind":false,
+     "remind_at":null,"reminders":[],"recurrence":null,"difficulty":null,"position":0,
+     "completed_at":"2026-10-09T18:00:00Z","capture_id":null,
+     "created_at":"2026-10-09T18:00:00Z","updated_at":"2026-10-09T18:00:00Z"}
     """.utf8)
 
     static func tokenResponse(access: String) -> Data {
@@ -150,6 +199,22 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 
     static func requestCount(path: String) -> Int {
         state.withLock { $0.paths.filter { $0 == path }.count }
+    }
+
+    /// Тело запроса: URLSession передаёт его протоколу потоком, а не в httpBody.
+    static func bodyJSON(_ request: URLRequest) -> [String: Any]? {
+        var data = request.httpBody ?? Data()
+        if data.isEmpty, let stream = request.httpBodyStream {
+            stream.open()
+            defer { stream.close() }
+            var buffer = [UInt8](repeating: 0, count: 4096)
+            while stream.hasBytesAvailable {
+                let count = stream.read(&buffer, maxLength: buffer.count)
+                guard count > 0 else { break }
+                data.append(buffer, count: count)
+            }
+        }
+        return (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
     }
 
     override class func canInit(with request: URLRequest) -> Bool { true }

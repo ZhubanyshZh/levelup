@@ -34,6 +34,8 @@ targets:
     platform: iOS
     sources:
       - path: LevelUp
+      # Интенты, которые запускают приложение: их используют и Siri, и Пункт управления.
+      - path: Shared
     dependencies:
       - package: LevelUpKit
       - package: GoogleSignIn
@@ -58,6 +60,9 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: google-sign-in
             CFBundleURLSchemes: [$(GOOGLE_REVERSED_CLIENT_ID)]
+          # Ссылки из виджетов: levelup://capture, levelup://journal/new …
+          - CFBundleURLName: levelup
+            CFBundleURLSchemes: [levelup]
         NSLocalNetworkUsageDescription: Level Up подключается к серверу разработки в локальной сети.
         NSMicrophoneUsageDescription: Микрофон нужен, чтобы записывать задачи и мысли голосом.
         NSSpeechRecognitionUsageDescription: Распознавание речи превращает твой голос в текст записи.
@@ -80,6 +85,7 @@ targets:
     platform: iOS
     sources:
       - path: LevelUpWidgets
+      - path: Shared
     dependencies:
       - package: LevelUpKit
     info:

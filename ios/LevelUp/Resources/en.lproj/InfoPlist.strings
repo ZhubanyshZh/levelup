@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "Level Up";
+"NSMicrophoneUsageDescription" = "The microphone lets you add tasks and thoughts by voice.";
+"NSSpeechRecognitionUsageDescription" = "Speech recognition turns your voice into the text of an entry.";
+"NSLocalNetworkUsageDescription" = "Level Up connects to the development server on your local network.";

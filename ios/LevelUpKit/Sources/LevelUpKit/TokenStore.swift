@@ -10,8 +10,9 @@ public protocol TokenStore: Sendable {
 public struct KeychainTokenStore: TokenStore {
     private let item: KeychainItem
 
-    public init(service: String = "levelup.auth") {
-        item = KeychainItem(service: service, account: "tokens")
+    /// accessGroup — App Group: тогда токены видят и виджеты (чтобы отмечать задачи без приложения).
+    public init(service: String = "levelup.auth", accessGroup: String? = nil) {
+        item = KeychainItem(service: service, account: "tokens", accessGroup: accessGroup)
     }
 
     public func load() -> AuthTokens? {

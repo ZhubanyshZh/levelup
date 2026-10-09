@@ -501,6 +501,16 @@
         }
       }
     },
+    "Готово. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done. %@"
+          }
+        }
+      }
+    },
     "Данные будут привязаны к этому iPhone. Google можно подключить позже — ничего не потеряется.": {
       "localizations": {
         "en": {
@@ -571,12 +581,42 @@
         }
       }
     },
+    "Добавить ${text}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add ${text}"
+          }
+        }
+      }
+    },
+    "Добавить запись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Entry"
+          }
+        }
+      }
+    },
     "Добавить продукт": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Add an item"
+          }
+        }
+      }
+    },
+    "Добавить текстом": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add as Text"
           }
         }
       }
@@ -761,6 +801,16 @@
         }
       }
     },
+    "Записать голосом": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record by Voice"
+          }
+        }
+      }
+    },
     "Записей в дневнике: %lld": {
       "localizations": {
         "en": {
@@ -777,6 +827,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Entry"
+          }
+        }
+      }
+    },
+    "Запись в дневник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal Entry"
           }
         }
       }
@@ -1241,12 +1301,32 @@
         }
       }
     },
+    "Нет связи с сервером. Запись сохранена на телефоне и отправится сама.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't reach the server. The entry is saved on your phone and will be sent automatically."
+          }
+        }
+      }
+    },
     "Нет связи с сервером. Проверь интернет и попробуй ещё раз.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Can't reach the server. Check your connection and try again."
+          }
+        }
+      }
+    },
+    "Нечего отменять.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to undo."
           }
         }
       }
@@ -1351,6 +1431,26 @@
         }
       }
     },
+    "Открывает Level Up и сразу начинает запись. ИИ сам разложит сказанное по местам.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens Level Up and starts recording right away. AI sorts out what you said."
+          }
+        }
+      }
+    },
+    "Открывает новую запись в дневнике.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens a new journal entry."
+          }
+        }
+      }
+    },
     "Отлично": {
       "localizations": {
         "en": {
@@ -1367,6 +1467,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Отменил последнюю запись.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undid the last entry."
+          }
+        }
+      }
+    },
+    "Отменить запись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo Entry"
+          }
+        }
+      }
+    },
+    "Отменить последнюю запись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo Last Entry"
           }
         }
       }
@@ -1631,12 +1761,32 @@
         }
       }
     },
+    "Пустая запись — нечего добавить.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The entry is empty — nothing to add."
+          }
+        }
+      }
+    },
     "Работает": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Working"
+          }
+        }
+      }
+    },
+    "Разбирает текст и сразу сохраняет задачи, покупки и записи в дневник — приложение открывать не нужно.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parses the text and saves tasks, shopping and journal entries right away — no need to open the app."
           }
         }
       }
@@ -1881,6 +2031,16 @@
         }
       }
     },
+    "Сначала открой Level Up и войди.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Level Up and sign in first."
+          }
+        }
+      }
+    },
     "Сохранено": {
       "localizations": {
         "en": {
@@ -1907,6 +2067,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Saved on this phone"
+          }
+        }
+      }
+    },
+    "Сохранил во «Входящие».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved to Inbox."
+          }
+        }
+      }
+    },
+    "Сохранил во «Входящие». %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved to Inbox. %@"
           }
         }
       }
@@ -2007,6 +2187,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tags"
+          }
+        }
+      }
+    },
+    "Текст": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text"
           }
         }
       }
@@ -2151,6 +2341,16 @@
         }
       }
     },
+    "Удаляет задачи, покупки и записи дневника, добавленные последней записью через Siri или команду.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removes the tasks, shopping items and journal entries added by the last entry from Siri or a shortcut."
+          }
+        }
+      }
+    },
     "Уровень": {
       "localizations": {
         "en": {
@@ -2271,6 +2471,16 @@
         }
       }
     },
+    "Что записать?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What should I add?"
+          }
+        }
+      }
+    },
     "Что сделать": {
       "localizations": {
         "en": {
@@ -2307,6 +2517,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Energy %lld of 5"
+          }
+        }
+      }
+    },
+    "Эта запись уже отменена.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That entry was already undone."
           }
         }
       }

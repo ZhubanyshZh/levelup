@@ -41,6 +41,15 @@ public struct LocalDate: Codable, Sendable, Hashable, Comparable, CustomStringCo
         LocalDate(calendar.date(byAdding: .day, value: days, to: date(calendar: calendar)) ?? .now, calendar: calendar)
     }
 
+    public var weekday: Weekday {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        let date = calendar.date(from: DateComponents(year: year, month: month, day: day)) ?? .distantPast
+        // В григорианском календаре 1 — воскресенье.
+        let index = (calendar.component(.weekday, from: date) + 5) % 7
+        return Weekday.allCases[index]
+    }
+
     public static func < (lhs: LocalDate, rhs: LocalDate) -> Bool {
         (lhs.year, lhs.month, lhs.day) < (rhs.year, rhs.month, rhs.day)
     }

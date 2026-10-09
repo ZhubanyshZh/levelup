@@ -2,7 +2,6 @@ import Foundation
 import LevelUpKit
 import Observation
 import UIKit
-import WidgetKit
 
 /// Состояние входа. Разлогинивает только когда сервер отверг сессию — не при проблемах с сетью.
 @MainActor
@@ -24,17 +23,41 @@ final class SessionStore {
 
     let config: AppConfig
     let api: APIClient
-    let snapshots: SnapshotStore
+    private let widgets: WidgetPublisher
     private let deviceCredentials = DeviceCredentialStore()
     private let userCache = UserCache()
+    private var restoreTask: Task<Void, Never>?
 
     init(config: AppConfig) {
         self.config = config
-        api = APIClient(baseURL: config.apiBaseURL, tokenStore: KeychainTokenStore())
-        snapshots = SnapshotStore(appGroupID: config.appGroupID)
+        // Токены в общей с виджетами группе: так виджеты отмечают задачи без приложения.
+        api = APIClient(
+            baseURL: config.apiBaseURL,
+            tokenStore: KeychainTokenStore(accessGroup: config.appGroupID)
+        )
+        widgets = WidgetPublisher(appGroupID: config.appGroupID)
+    }
+
+    /// Для Siri и команд: приложение могло запуститься в фоне, и вход ещё не восстановлен.
+    func signedInStore() async -> AppStore? {
+        if state == .loading {
+            await restore()
+        }
+        return appStore
     }
 
     func restore() async {
+        // Восстановление могут запросить одновременно экран и Siri — делаем его один раз.
+        if let restoreTask {
+            return await restoreTask.value
+        }
+        let task = Task { await performRestore() }
+        restoreTask = task
+        await task.value
+        restoreTask = nil
+    }
+
+    private func performRestore() async {
         guard api.hasSession else {
             signOutLocally()
             return
@@ -105,31 +128,26 @@ final class SessionStore {
         userCache.save(user)
         errorMessage = nil
         enter(user)
-        updateWidget(appStore?.progress.progress ?? .initial)
     }
 
     private func enter(_ user: User) {
         if appStore == nil {
             appStore = AppStore(
                 api: api,
-                onUnauthorized: { [weak self] in self?.sessionExpired() },
-                onProgress: { [weak self] in self?.updateWidget($0) }
+                widgets: widgets,
+                displayName: { [weak self] in self?.currentUser?.displayName },
+                onUnauthorized: { [weak self] in self?.sessionExpired() }
             )
         }
         state = .signedIn(user)
+        // Виджеты сразу получают данные из кэша, не дожидаясь сети.
+        widgets.start()
+        appStore?.publishWidgets()
     }
 
-    /// Виджеты показывают уровень и опыт из общего хранилища App Group.
-    private func updateWidget(_ progress: LevelProgress) {
-        guard case .signedIn(let user) = state else { return }
-        writeSnapshot(WidgetSnapshot(
-            isSignedIn: true,
-            displayName: user.displayName,
-            level: progress.level,
-            xp: progress.xpInLevel,
-            xpForNextLevel: progress.xpForNextLevel,
-            updatedAt: .now
-        ))
+    private var currentUser: User? {
+        if case .signedIn(let user) = state { return user }
+        return nil
     }
 
     /// Сервер отверг сессию (например, refresh-токен отозван).
@@ -144,7 +162,7 @@ final class SessionStore {
         appStore = nil
         userCache.clear()
         state = .signedOut
-        writeSnapshot(.signedOut)
+        widgets.signOut()
     }
 
     /// Пользователь мог переехать или путешествовать: «завтра» должно считаться по месту.
@@ -153,11 +171,6 @@ final class SessionStore {
         if let updated = try? await api.updateMe(UserUpdate(timezone: TimeZone.current.identifier)) {
             apply(updated)
         }
-    }
-
-    private func writeSnapshot(_ snapshot: WidgetSnapshot) {
-        try? snapshots.write(snapshot)
-        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private var clientInfo: ClientInfo {

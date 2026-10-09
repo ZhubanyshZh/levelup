@@ -11,6 +11,8 @@ final class ShoppingStore {
     private let api: APIClient
     private let cache = LocalCache<[ShoppingItem]>(name: "shopping")
     var onUnauthorized: () -> Void = {}
+    /// Любое изменение данных — например, чтобы обновить виджеты.
+    var onChange: () -> Void = {}
 
     init(api: APIClient) {
         self.api = api
@@ -101,6 +103,7 @@ final class ShoppingStore {
     private func replaceAll(_ newItems: [ShoppingItem]) {
         items = newItems
         cache.save(newItems)
+        onChange()
     }
 
     private func report(_ error: Error) {

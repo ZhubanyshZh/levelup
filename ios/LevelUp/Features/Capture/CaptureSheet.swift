@@ -5,6 +5,8 @@ import SwiftUI
 struct CaptureSheet: View {
     /// Открыть запись из «Входящих» сразу на нужном шаге.
     var initialCapture: Capture?
+    /// .voice — сразу слушать (Siri, виджет, Пункт управления); .text — клавиатура.
+    var startMode: AppRoute.CaptureMode = .text
 
     private enum Phase: Equatable {
         case input
@@ -47,6 +49,8 @@ struct CaptureSheet: View {
         .onAppear {
             if let initialCapture {
                 show(initialCapture)
+            } else if startMode == .voice {
+                toggleRecording()
             } else {
                 isEditorFocused = true
             }
@@ -249,27 +253,7 @@ struct CaptureSheet: View {
     }
 
     private func summary(of result: CaptureResult) -> String {
-        var parts: [String] = []
-        if !result.tasks.isEmpty {
-            parts.append(String(localized: "Задач: \(result.tasks.count)"))
-        }
-        if !result.facts.isEmpty {
-            parts.append(String(localized: "Фактов о тебе: \(result.facts.count)"))
-        }
-        if !result.journal.isEmpty {
-            parts.append(String(localized: "Записей в дневнике: \(result.journal.count)"))
-        }
-        if !result.shopping.isEmpty {
-            parts.append(String(localized: "Покупок: \(result.shopping.count)"))
-        }
-        if result.xpGained > 0 {
-            parts.append("+\(result.xpGained) XP")
-        }
-        let waiting = result.capture.items.filter { $0.include && !$0.supported }.count
-        if waiting > 0 {
-            parts.append(String(localized: "ждут во «Входящих»: \(waiting)"))
-        }
-        return parts.isEmpty ? String(localized: "Ничего не добавлено.") : parts.joined(separator: " · ")
+        CaptureSummary.text(of: result)
     }
 
     // MARK: Остальные состояния

@@ -11,12 +11,304 @@
         }
       }
     },
+    "%lld дней подряд": {
+      "localizations": {
+        "ru": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld день подряд"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld дня подряд"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld дней подряд"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld дня подряд"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day in a row"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days in a row"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "+%lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%lld XP"
+          }
+        }
+      }
+    },
+    "1 кг": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 kg"
+          }
+        }
+      }
+    },
+    "Быстрый ввод": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick Capture"
+          }
+        }
+      }
+    },
+    "Вернуть в работу": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark as not done"
+          }
+        }
+      }
+    },
     "Войди в приложение": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Open the app to sign in"
+          }
+        }
+      }
+    },
+    "Вычеркнуть покупку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check Off Item"
+          }
+        }
+      }
+    },
+    "Голос": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voice"
+          }
+        }
+      }
+    },
+    "Дневник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal"
+          }
+        }
+      }
+    },
+    "До уровня %lld: %lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To level %lld: %lld XP"
+          }
+        }
+      }
+    },
+    "Ещё %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld more"
+          }
+        }
+      }
+    },
+    "Задач нет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No tasks"
+          }
+        }
+      }
+    },
+    "Задач: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasks: %lld"
+          }
+        }
+      }
+    },
+    "Задача": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Task"
+          }
+        }
+      }
+    },
+    "Задачи на сегодня — отмечай прямо здесь.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's tasks — check them off right here."
+          }
+        }
+      }
+    },
+    "Записать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record"
+          }
+        }
+      }
+    },
+    "Записать голосом": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record by Voice"
+          }
+        }
+      }
+    },
+    "Записать дела голосом": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add tasks by voice"
+          }
+        }
+      }
+    },
+    "Запись в дневник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal Entry"
+          }
+        }
+      }
+    },
+    "Запись голосом в одно касание.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voice capture in one tap."
+          }
+        }
+      }
+    },
+    "Запиши пару слов — +15 XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write a few words — +15 XP"
+          }
+        }
+      }
+    },
+    "ИИ разложит сам": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI sorts it out"
+          }
+        }
+      }
+    },
+    "Как прошёл день?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How was your day?"
+          }
+        }
+      }
+    },
+    "Корм коту": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat food"
+          }
+        }
+      }
+    },
+    "Молоко": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Milk"
+          }
+        }
+      }
+    },
+    "На сегодня задач нет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No tasks for today"
           }
         }
       }
@@ -31,12 +323,212 @@
         }
       }
     },
+    "Обед": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lunch"
+          }
+        }
+      }
+    },
+    "Открывает Level Up и сразу начинает запись голосом.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens Level Up and starts voice recording right away."
+          }
+        }
+      }
+    },
+    "Открывает Level Up и сразу начинает запись. ИИ сам разложит сказанное по местам.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens Level Up and starts recording right away. AI sorts out what you said."
+          }
+        }
+      }
+    },
+    "Открывает новую запись в дневнике.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens a new journal entry."
+          }
+        }
+      }
+    },
+    "Отметить выполненной": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark as done"
+          }
+        }
+      }
+    },
+    "Отметить задачу": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check Off Task"
+          }
+        }
+      }
+    },
+    "Отправить отчёт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send the report"
+          }
+        }
+      }
+    },
+    "Позвонить в банк": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call the bank"
+          }
+        }
+      }
+    },
+    "Покупка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item"
+          }
+        }
+      }
+    },
+    "Покупки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shopping"
+          }
+        }
+      }
+    },
+    "Прочитать главу книги": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read a book chapter"
+          }
+        }
+      }
+    },
+    "Сегодня": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        }
+      }
+    },
+    "Сегодня +%lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today +%lld XP"
+          }
+        }
+      }
+    },
+    "Сегодня записано": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Written today"
+          }
+        }
+      }
+    },
+    "Серия дней дневника и напоминание вечером.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your journal streak and an evening reminder."
+          }
+        }
+      }
+    },
+    "Скажи «купить молоко и хлеб»": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Say “buy milk and bread”"
+          }
+        }
+      }
+    },
+    "Список покупок — вычёркивай купленное прямо здесь.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your shopping list — check items off right here."
+          }
+        }
+      }
+    },
+    "Список пуст": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The list is empty"
+          }
+        }
+      }
+    },
     "Твой уровень и опыт.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Your level and XP."
+          }
+        }
+      }
+    },
+    "Текст": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text"
+          }
+        }
+      }
+    },
+    "Тренировка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workout"
           }
         }
       }
@@ -61,12 +553,52 @@
         }
       }
     },
+    "Ур. %lld · %lld/%lld XP": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lv. %lld · %lld/%lld XP"
+          }
+        }
+      }
+    },
+    "Ур. %lld · задач: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lv. %lld · tasks: %lld"
+          }
+        }
+      }
+    },
     "Уровень": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Level"
+          }
+        }
+      }
+    },
+    "Хлеб": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bread"
+          }
+        }
+      }
+    },
+    "Яблоки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apples"
           }
         }
       }

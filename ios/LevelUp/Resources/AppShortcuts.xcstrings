@@ -1,0 +1,86 @@
+{
+  "sourceLanguage": "ru",
+  "strings": {
+    "Дневник в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Добавить в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add something to ${applicationName}"
+          }
+        }
+      }
+    },
+    "Добавь в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to ${applicationName}"
+          }
+        }
+      }
+    },
+    "Записать в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Запиши в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Запиши день в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log my day in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Новая запись в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New entry in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Отмени последнюю запись в ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo last entry in ${applicationName}"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
