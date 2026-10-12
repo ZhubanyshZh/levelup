@@ -14,6 +14,16 @@ class HealthOut(BaseModel):
     version: str
 
 
+class PingOut(BaseModel):
+    status: str
+
+
+@router.get("/ping")
+async def ping() -> PingOut:
+    # Без базы: сюда каждые несколько минут стучится keepalive, а Neon при этом должен спать.
+    return PingOut(status="ok")
+
+
 @router.get("/health")
 async def health(db: DB) -> HealthOut:
     try:

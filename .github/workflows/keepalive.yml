@@ -1,0 +1,35 @@
+# Не даёт бесплатному серверу на Render уснуть: он засыпает после 15 минут без запросов.
+# Адрес сервера лежит в секрете репозитория KEEPALIVE_URL, например https://levelup-api.onrender.com
+# Бесплатно только для публичного репозитория: в приватном это ~8600 минут Actions в месяц.
+name: keepalive
+
+on:
+  schedule:
+    # Чаще, чем раз в 5 минут, GitHub по расписанию не запускает. Минуты сдвинуты с начала часа:
+    # в это время очередь GitHub самая длинная и запуски опаздывают.
+    - cron: "2-59/5 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: keepalive
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping
+        env:
+          KEEPALIVE_URL: ${{ secrets.KEEPALIVE_URL }}
+        run: |
+          if [ -z "$KEEPALIVE_URL" ]; then
+            echo "::error::Не задан секрет KEEPALIVE_URL (Settings → Secrets and variables → Actions)"
+            exit 1
+          fi
+          # /ping не ходит в базу. Запас по времени — на случай, если сервер всё же уснул и просыпается.
+          curl --fail --silent --show-error --output /dev/null \
+            --max-time 90 --retry 2 --retry-delay 5 \
+            "${KEEPALIVE_URL%/}/ping"
