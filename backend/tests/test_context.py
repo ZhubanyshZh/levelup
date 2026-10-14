@@ -61,9 +61,60 @@ def test_busy_conflict_handles_regular_and_overnight_slots() -> None:
     assert find_busy_conflict(saturday, time(8, 0), [sleep]) is None
 
 
+def test_fact_without_schedule_does_not_block_tasks() -> None:
+    fact = _fact("Гибкий график", ["MON"], "09:00", "18:00")
+    fact.data = None
+    assert find_busy_conflict(date(2026, 10, 12), time(10), [fact]) is None
+
+
 def test_parse_schema_is_accepted_by_openai_strict_mode() -> None:
     schema = to_strict_json_schema(ParseResult)
 
     item = schema["$defs"]["ParsedItem"]
     assert item["additionalProperties"] is False
     assert set(item["required"]) == set(item["properties"])
+
+
+def test_individual_day_intervals_drive_context_and_conflicts() -> None:
+    fact = _fact("Работа", ["MON", "FRI"], "09:00", "18:00")
+    fact.data["day_intervals"] = [{"weekday": "FRI", "start": "12:30", "end": "14:00"}]
+    monday, friday = date(2026, 10, 12), date(2026, 10, 16)
+
+    assert find_busy_conflict(monday, time(10), [fact]).end == "18:00"
+    assert find_busy_conflict(friday, time(10), [fact]) is None
+    assert find_busy_conflict(friday, time(13), [fact]).end == "14:00"
+    assert find_busy_conflict(friday, time(14), [fact]) is None
+    context = UserContext.build(timezone="UTC", locale="ru", facts=[fact])
+    assert "every MON 09:00-18:00; FRI 12:30-14:00, busy" in ContextBuilder(context).context_block()
+
+
+def test_individual_overnight_interval_uses_previous_days_times() -> None:
+    fact = _fact("Сон", ["FRI", "SAT"], "23:30", "07:00")
+    fact.data["day_intervals"] = [{"weekday": "SAT", "start": "22:00", "end": "09:00"}]
+    saturday, sunday = date(2026, 10, 17), date(2026, 10, 18)
+
+    assert find_busy_conflict(saturday, time(6, 30), [fact]).end == "07:00"
+    assert find_busy_conflict(saturday, time(8), [fact]) is None
+    assert find_busy_conflict(sunday, time(8), [fact]).end == "09:00"
+    assert find_busy_conflict(sunday, time(9), [fact]) is None
+
+
+def test_reminders_use_individual_day_end_including_next_morning() -> None:
+    from app.models import Task
+    from app.services.schedule import upcoming_reminders
+
+    fact = _fact("Работа", ["MON", "FRI"], "09:00", "18:00")
+    fact.data["day_intervals"] = [{"weekday": "FRI", "start": "12:30", "end": "14:00"}]
+    task = Task(
+        remind=True,
+        status="todo",
+        priority="normal",
+        due_date=date(2026, 10, 16),
+        due_time=time(13),
+        recurrence=None,
+    )
+    now = datetime(2026, 10, 16, tzinfo=UTC)
+    assert upcoming_reminders(task, "UTC", [fact], now) == [datetime(2026, 10, 16, 14, tzinfo=UTC)]
+    fact.data["day_intervals"] = [{"weekday": "FRI", "start": "23:00", "end": "07:00"}]
+    task.due_time = time(23, 30)
+    assert upcoming_reminders(task, "UTC", [fact], now) == [datetime(2026, 10, 17, 7, tzinfo=UTC)]

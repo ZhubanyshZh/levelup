@@ -271,9 +271,12 @@ extension WidgetSnapshot {
     }
 
     public static func busySlots(_ facts: [ProfileFact]) -> [BusySlot] {
-        facts.compactMap { fact in
-            guard fact.isActive, let schedule = fact.schedule, schedule.busy else { return nil }
-            return BusySlot(title: fact.text, weekdays: schedule.weekdays, start: schedule.start, end: schedule.end)
+        facts.flatMap { fact -> [BusySlot] in
+            guard fact.isActive, let schedule = fact.schedule, schedule.busy else { return [] }
+            return schedule.weekdays.sorted().map { day in
+                let interval = schedule.interval(on: day)
+                return BusySlot(title: fact.text, weekdays: [day], start: interval.start, end: interval.end)
+            }
         }
     }
 

@@ -281,7 +281,8 @@ struct TransactionEditorView: View {
     @State private var note = ""
     @State private var date = Date.now
     @State private var isSaving = false
-    @FocusState private var amountFocused: Bool
+    private enum Field: Hashable { case amount, note }
+    @FocusState private var focusedField: Field?
 
     private var currency: String {
         row?.currency ?? store.finance.summary?.currency ?? "KZT"
@@ -304,8 +305,10 @@ struct TransactionEditorView: View {
                     TextField("Сумма", value: $amount, format: .number)
                         .keyboardType(.decimalPad)
                         .font(.title.bold())
-                        .focused($amountFocused)
+                        .focused($focusedField, equals: .amount)
                     TextField("На что", text: $note)
+                        .focused($focusedField, equals: .note)
+                        .submitLabel(.done)
                 }
 
                 Section("Категория") {
@@ -347,6 +350,7 @@ struct TransactionEditorView: View {
                     }
                 }
             }
+            .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
             .navigationTitle(row != nil ? "Операция" : kind == .expense ? "Трата" : "Доход")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -364,7 +368,7 @@ struct TransactionEditorView: View {
 
     private func fill() {
         guard let row else {
-            amountFocused = true
+            focusedField = .amount
             return
         }
         kind = row.kind
@@ -376,6 +380,7 @@ struct TransactionEditorView: View {
 
     private func save() async {
         guard let amount, amount > 0 else { return }
+        focusedField = nil
         isSaving = true
         defer { isSaving = false }
         let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -400,6 +405,8 @@ struct BudgetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var total: Double?
     @State private var limits: [MoneyCategory: Double] = [:]
+    private enum Field: Hashable { case total, category(MoneyCategory) }
+    @FocusState private var focusedField: Field?
 
     var body: some View {
         NavigationStack {
@@ -407,6 +414,7 @@ struct BudgetView: View {
                 Section {
                     TextField("Без лимита", value: $total, format: .number)
                         .keyboardType(.decimalPad)
+                        .focused($focusedField, equals: .total)
                 } header: {
                     Text("Всего в месяц")
                 } footer: {
@@ -422,10 +430,12 @@ struct BudgetView: View {
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                                 .frame(maxWidth: 120)
+                                .focused($focusedField, equals: .category(category))
                         }
                     }
                 }
             }
+            .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
             .navigationTitle("Бюджет")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -453,6 +463,7 @@ struct BudgetView: View {
 
     private func save() async {
         let finance = store.finance
+        focusedField = nil
         if total != budgets.first(where: { $0.category == nil })?.monthlyLimit {
             await finance.setBudget(nil, limit: total)
         }

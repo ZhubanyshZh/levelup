@@ -29,7 +29,7 @@ struct WidgetEnvironment {
         let outcome = await WidgetActionSender.flush(api: api, store: pending)
         guard outcome.sent > 0 else { return }
         async let progress = try? api.progress()
-        async let tasks = try? api.tasks()
+        async let tasks = try? api.taskPage(TaskPageQuery(scope: .widgets), limit: 100)
         async let shopping = try? api.shopping()
         let (freshProgress, freshTasks, freshShopping) = await (progress, tasks, shopping)
 
@@ -37,7 +37,7 @@ struct WidgetEnvironment {
         let waiting = pending.all()
         snapshots.update { snapshot in
             if let freshProgress { snapshot.apply(freshProgress, today: today) }
-            if let freshTasks { snapshot.tasks = WidgetSnapshot.taskEntries(freshTasks, today: today) }
+            if let freshTasks { snapshot.tasks = WidgetSnapshot.taskEntries(freshTasks.items, today: today) }
             if let freshShopping { snapshot.shopping = WidgetSnapshot.shoppingEntries(freshShopping) }
             snapshot.apply(waiting, today: today)
         }

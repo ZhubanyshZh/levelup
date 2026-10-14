@@ -35,9 +35,13 @@ public enum CoachReminderPlan {
         let previous = day.adding(days: -1, calendar: calendar)
         let minute = calendar.component(.hour, from: date) * 60 + calendar.component(.minute, from: date)
         return schedules.contains { schedule in
-            guard schedule.busy, let start = minutes(schedule.start), let end = minutes(schedule.end) else { return false }
-            if start < end { return schedule.weekdays.contains(day.weekday) && minute >= start && minute < end }
-            return (schedule.weekdays.contains(day.weekday) && minute >= start) || (schedule.weekdays.contains(previous.weekday) && minute < end)
+            guard schedule.busy else { return false }
+            return schedule.weekdays.contains { weekday in
+                let interval = schedule.interval(on: weekday)
+                guard let start = minutes(interval.start), let end = minutes(interval.end) else { return false }
+                if start < end { return weekday == day.weekday && minute >= start && minute < end }
+                return (weekday == day.weekday && minute >= start) || (weekday == previous.weekday && minute < end)
+            }
         }
     }
 

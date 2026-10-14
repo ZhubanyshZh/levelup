@@ -1,3 +1,6 @@
+from datetime import UTC, datetime
+
+import pytest
 from httpx import AsyncClient
 
 from tests.conftest import bearer, sign_in_device
@@ -36,7 +39,10 @@ async def test_schedule_must_have_distinct_bounds(client: AsyncClient) -> None:
     assert response.status_code == 422
 
 
-async def test_reminder_is_computed_in_user_timezone(client: AsyncClient) -> None:
+async def test_reminder_is_computed_in_user_timezone(
+    client: AsyncClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr("app.services.tasks.utcnow", lambda: datetime(2026, 10, 9, tzinfo=UTC))
     tokens = await sign_in_device(client, timezone="Asia/Almaty")
 
     with_time = await client.post(
@@ -107,3 +113,54 @@ async def test_deleted_task_disappears(client: AsyncClient) -> None:
     await client.delete(f"/tasks/{task['id']}", headers=bearer(tokens))
 
     assert (await client.get("/tasks", headers=bearer(tokens))).json() == []
+
+
+async def test_profile_per_day_schedule_round_trips_and_can_return_to_shared_time(
+    client: AsyncClient,
+) -> None:
+    tokens = await sign_in_device(client)
+    schedule = {
+        "weekdays": ["FRI", "MON"],
+        "start": "09:00",
+        "end": "18:00",
+        "busy": True,
+        "day_intervals": [
+            {"weekday": "FRI", "start": "12:30", "end": "14:00"},
+            {"weekday": "MON", "start": "09:00", "end": "18:00"},
+        ],
+    }
+    created = await client.post(
+        "/profile/facts", headers=bearer(tokens), json={**JUMA, "schedule": schedule}
+    )
+    assert created.status_code == 201
+    fact = created.json()
+    assert fact["schedule"]["day_intervals"][0]["weekday"] == "MON"
+    fetched = (await client.get("/profile/facts", headers=bearer(tokens))).json()[0]
+    assert fetched["schedule"] == fact["schedule"]
+    patched = await client.patch(
+        f"/profile/facts/{fact['id']}", headers=bearer(tokens), json={"is_active": False}
+    )
+    assert patched.json()["schedule"] == fact["schedule"]
+    shared = await client.patch(
+        f"/profile/facts/{fact['id']}", headers=bearer(tokens), json={"schedule": JUMA["schedule"]}
+    )
+    assert shared.json()["schedule"]["day_intervals"] == []
+
+
+async def test_per_day_schedule_rejects_duplicates_unselected_days_and_equal_times(
+    client: AsyncClient,
+) -> None:
+    tokens = await sign_in_device(client)
+    friday = {"weekday": "FRI", "start": "12:30", "end": "14:00"}
+    for intervals in (
+        [friday, friday],
+        [{**friday, "weekday": "MON"}],
+        [{**friday, "end": "12:30"}],
+        [{**friday, "start": "25:00"}],
+    ):
+        response = await client.post(
+            "/profile/facts",
+            headers=bearer(tokens),
+            json={**JUMA, "schedule": {**JUMA["schedule"], "day_intervals": intervals}},
+        )
+        assert response.status_code == 422

@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 from app.core.time import utcnow
 from app.models import ProfileFact
 from app.schemas.common import WEEKDAYS
+from app.schemas.profile import ScheduleData
 
 LANGUAGE_NAMES = {"ru": "Russian", "en": "English"}
 WEEKDAY_NAMES = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -207,7 +208,14 @@ def describe_fact(fact: ProfileFact) -> str:
     text = f"[{fact.category}] {fact.text}"
     schedule = fact.data or {}
     if schedule.get("weekdays"):
-        days = ",".join(day for day in WEEKDAYS if day in schedule["weekdays"])
         busy = ", busy" if schedule.get("busy", True) else ""
-        text += f" (every {days} {schedule['start']}-{schedule['end']}{busy})"
+        if schedule.get("day_intervals"):
+            slots = "; ".join(
+                f"{interval.weekday} {interval.start}-{interval.end}"
+                for interval in ScheduleData.model_validate(schedule).intervals()
+            )
+            text += f" (every {slots}{busy})"
+        else:
+            days = ",".join(day for day in WEEKDAYS if day in schedule["weekdays"])
+            text += f" (every {days} {schedule['start']}-{schedule['end']}{busy})"
     return text

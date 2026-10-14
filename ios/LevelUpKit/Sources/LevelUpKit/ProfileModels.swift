@@ -13,17 +13,50 @@ public enum FactCategory: String, Codable, Sendable, CaseIterable {
 }
 
 /// Регулярное время: дни недели и интервал «HH:MM». Если end < start — через полночь.
+public struct DayInterval: Codable, Sendable, Hashable {
+    public var weekday: Weekday
+    public var start: String
+    public var end: String
+
+    public init(weekday: Weekday, start: String, end: String) {
+        self.weekday = weekday
+        self.start = start
+        self.end = end
+    }
+}
+
 public struct Schedule: Codable, Sendable, Hashable {
     public var weekdays: [Weekday]
     public var start: String
     public var end: String
     public var busy: Bool
+    /// Отдельное время дня; дни без переопределения используют общий интервал.
+    public var dayIntervals: [DayInterval]
 
-    public init(weekdays: [Weekday], start: String, end: String, busy: Bool = true) {
+    public init(weekdays: [Weekday], start: String, end: String, busy: Bool = true, dayIntervals: [DayInterval] = []) {
         self.weekdays = weekdays
         self.start = start
         self.end = end
         self.busy = busy
+        self.dayIntervals = dayIntervals
+    }
+
+    public func interval(on weekday: Weekday) -> DayInterval {
+        dayIntervals.first { $0.weekday == weekday }
+            ?? DayInterval(weekday: weekday, start: start, end: end)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case weekdays, start, end, busy, dayIntervals
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        weekdays = try container.decode([Weekday].self, forKey: .weekdays)
+        start = try container.decode(String.self, forKey: .start)
+        end = try container.decode(String.self, forKey: .end)
+        busy = try container.decodeIfPresent(Bool.self, forKey: .busy) ?? true
+        dayIntervals = try container.decodeIfPresent([DayInterval].self, forKey: .dayIntervals) ?? []
     }
 }
 

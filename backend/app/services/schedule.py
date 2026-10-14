@@ -7,9 +7,12 @@ from collections.abc import Sequence
 from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
+from pydantic import ValidationError
+
 from app.models import ProfileFact, Task
 from app.schemas.capture import BusyConflict
 from app.schemas.common import WEEKDAYS, parse_hhmm
+from app.schemas.profile import ScheduleData
 from app.services import recurrence
 
 DEFAULT_REMIND_TIME = time(9, 0)
@@ -22,22 +25,26 @@ def find_busy_conflict(
         schedule = fact.data or {}
         if fact.category != "schedule" or not fact.is_active or not schedule.get("busy", True):
             continue
-        start, end = parse_hhmm(schedule.get("start")), parse_hhmm(schedule.get("end"))
-        if start is None or end is None:
+        try:
+            intervals = ScheduleData.model_validate(schedule).intervals()
+        except ValidationError:
             continue
-        weekdays = schedule.get("weekdays") or []
-        if start < end:
-            hit = WEEKDAYS[due_date.weekday()] in weekdays and start <= due_time < end
-        else:
-            # Через полночь (сон 23:30–07:00): вечер этого дня или утро после него.
-            previous = WEEKDAYS[(due_date - timedelta(days=1)).weekday()]
-            hit = (WEEKDAYS[due_date.weekday()] in weekdays and due_time >= start) or (
-                previous in weekdays and due_time < end
-            )
-        if hit:
-            return BusyConflict(
-                fact_id=fact.id, fact_text=fact.text, start=schedule["start"], end=schedule["end"]
-            )
+        for interval in intervals:
+            start, end = parse_hhmm(interval.start), parse_hhmm(interval.end)
+            if start is None or end is None:
+                continue
+            if start < end:
+                hit = interval.weekday == WEEKDAYS[due_date.weekday()] and start <= due_time < end
+            else:
+                # Через полночь: вечер выбранного дня или утро после него.
+                previous = WEEKDAYS[(due_date - timedelta(days=1)).weekday()]
+                hit = (interval.weekday == WEEKDAYS[due_date.weekday()] and due_time >= start) or (
+                    interval.weekday == previous and due_time < end
+                )
+            if hit:
+                return BusyConflict(
+                    fact_id=fact.id, fact_text=fact.text, start=interval.start, end=interval.end
+                )
     return None
 
 
@@ -83,11 +90,15 @@ def upcoming_reminders(
     result = []
     for day in days:
         at = remind_time
+        reminder_day = day
         if task.priority != "high":
             conflict = find_busy_conflict(day, at, facts)
             if conflict is not None:
                 at = parse_hhmm(conflict.end) or at
-        moment = datetime.combine(day, at, tz)
+                start = parse_hhmm(conflict.start)
+                if start is not None and at < start and remind_time >= start:
+                    reminder_day += timedelta(days=1)
+        moment = datetime.combine(reminder_day, at, tz)
         if moment > now:
             result.append(moment.astimezone(ZoneInfo("UTC")))
     return result

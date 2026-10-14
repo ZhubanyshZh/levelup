@@ -91,16 +91,23 @@ struct FactEditorView: View {
     @State private var text = ""
     @State private var hasSchedule = false
     @State private var weekdays: Set<Weekday> = []
-    @State private var start = TimeText.date(from: "09:00") ?? .now
-    @State private var end = TimeText.date(from: "18:00") ?? .now
+    @State private var times: [Weekday: DayTimes] = [:]
     @State private var busy = true
     @State private var isSaving = false
+    @FocusState private var isTextFocused: Bool
+
+    private struct DayTimes {
+        var start = TimeText.date(from: "09:00") ?? .now
+        var end = TimeText.date(from: "18:00") ?? .now
+    }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Например: работаю с 9 до 18", text: $text, axis: .vertical)
+                    TextField("Например: работаю с 9 до 18", text: $text)
+                        .focused($isTextFocused)
+                        .submitLabel(.done)
                     Picker("Раздел", selection: $category) {
                         ForEach(FactCategory.allCases, id: \.self) { Text($0.title).tag($0) }
                     }
@@ -110,8 +117,6 @@ struct FactEditorView: View {
                     Toggle("Регулярное время", isOn: $hasSchedule.animation())
                     if hasSchedule {
                         WeekdayPicker(selection: $weekdays)
-                        DatePicker("С", selection: $start, displayedComponents: .hourAndMinute)
-                        DatePicker("До", selection: $end, displayedComponents: .hourAndMinute)
                         Toggle("В это время я занят", isOn: $busy)
                     }
                 } footer: {
@@ -119,7 +124,37 @@ struct FactEditorView: View {
                         Text("Задачи на это время ИИ будет отмечать как пересечение.")
                     }
                 }
+
+                if hasSchedule {
+                    ForEach(weekdays.sorted(), id: \.self) { day in
+                        Section {
+                            DatePicker("С", selection: timeBinding(for: day, keyPath: \.start), displayedComponents: .hourAndMinute)
+                                .accessibilityLabel(Text("\(day.title), начало"))
+                            DatePicker("До", selection: timeBinding(for: day, keyPath: \.end), displayedComponents: .hourAndMinute)
+                                .accessibilityLabel(Text("\(day.title), конец"))
+                        } header: {
+                            Text(verbatim: day.title.capitalized)
+                        } footer: {
+                            let interval = times[day] ?? DayTimes()
+                            let start = TimeText.string(from: interval.start)
+                            let end = TimeText.string(from: interval.end)
+                            if start == end {
+                                Text("Начало и конец должны отличаться.")
+                                    .foregroundStyle(.red)
+                            } else if end < start {
+                                Text("Заканчивается на следующий день.")
+                            }
+                        }
+                    }
+                    if weekdays.isEmpty {
+                        Section {
+                            Text("Выбери дни недели и укажи время для каждого дня.")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
             }
+            .keyboardDismissal(isFocused: isTextFocused) { isTextFocused = false }
             .navigationTitle(fact == nil ? "Новый факт" : "Факт")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -127,17 +162,27 @@ struct FactEditorView: View {
                     Button("Отмена") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Сохранить") { Task { await save() } }
+                    Button("Сохранить") {
+                        isTextFocused = false
+                        Task { await save() }
+                    }
                         .disabled(!isValid || isSaving)
                 }
             }
             .onAppear(perform: fill)
+            .overlay(alignment: .bottom) {
+                @Bindable var profile = store.profile
+                ErrorBanner(message: $profile.errorMessage)
+            }
         }
     }
 
     private var isValid: Bool {
         let hasText = !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        let scheduleOK = !hasSchedule || (!weekdays.isEmpty && TimeText.string(from: start) != TimeText.string(from: end))
+        let scheduleOK = !hasSchedule || (!weekdays.isEmpty && weekdays.allSatisfy { day in
+            let interval = times[day] ?? DayTimes()
+            return TimeText.string(from: interval.start) != TimeText.string(from: interval.end)
+        })
         return hasText && scheduleOK
     }
 
@@ -148,18 +193,40 @@ struct FactEditorView: View {
         if let schedule = fact.schedule {
             hasSchedule = true
             weekdays = Set(schedule.weekdays)
-            start = TimeText.date(from: schedule.start) ?? start
-            end = TimeText.date(from: schedule.end) ?? end
+            for day in schedule.weekdays {
+                let interval = schedule.interval(on: day)
+                times[day] = DayTimes(
+                    start: TimeText.date(from: interval.start) ?? .now,
+                    end: TimeText.date(from: interval.end) ?? .now
+                )
+            }
             busy = schedule.busy
         }
+    }
+
+    private func timeBinding(for day: Weekday, keyPath: WritableKeyPath<DayTimes, Date>) -> Binding<Date> {
+        Binding(
+            get: { (times[day] ?? DayTimes())[keyPath: keyPath] },
+            set: { value in
+                var interval = times[day] ?? DayTimes()
+                interval[keyPath: keyPath] = value
+                times[day] = interval
+            }
+        )
     }
 
     private func save() async {
         isSaving = true
         defer { isSaving = false }
-        let schedule = hasSchedule
-            ? Schedule(weekdays: weekdays.sorted(), start: TimeText.string(from: start), end: TimeText.string(from: end), busy: busy)
-            : nil
+        let intervals = weekdays.sorted().map { day in
+            let interval = times[day] ?? DayTimes()
+            return DayInterval(weekday: day, start: TimeText.string(from: interval.start), end: TimeText.string(from: interval.end))
+        }
+        let schedule: Schedule? = if hasSchedule, let first = intervals.first {
+            Schedule(weekdays: weekdays.sorted(), start: first.start, end: first.end, busy: busy, dayIntervals: intervals)
+        } else {
+            nil
+        }
         let input = FactInput(
             category: category,
             text: text.trimmingCharacters(in: .whitespacesAndNewlines),

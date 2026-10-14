@@ -1,3 +1,6 @@
+from datetime import UTC, datetime
+
+import pytest
 from httpx import AsyncClient
 
 from app.services.captures import normalize_item
@@ -50,8 +53,9 @@ async def test_capture_is_parsed_with_user_context(client: AsyncClient, fake_ai:
 
 
 async def test_confirm_creates_records_and_defers_unsupported(
-    client: AsyncClient, fake_ai: FakeAI
+    client: AsyncClient, fake_ai: FakeAI, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    monkeypatch.setattr("app.services.tasks.utcnow", lambda: datetime(2026, 10, 9, tzinfo=UTC))
     tokens = await sign_in_device(client)
     await configure_ai(client, tokens)
     fake_ai.respond(

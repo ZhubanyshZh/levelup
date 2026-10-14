@@ -34,6 +34,7 @@ struct CaptureSheet: View {
     var body: some View {
         NavigationStack {
             content
+                .keyboardDismissal(isFocused: isEditorFocused) { isEditorFocused = false }
                 .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -240,6 +241,7 @@ struct CaptureSheet: View {
     }
 
     private func confirm(_ capture: Capture) async {
+        isEditorFocused = false
         phase = .working
         do {
             let result = try await store.captures.confirm(capture, items: items)

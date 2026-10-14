@@ -16,12 +16,14 @@ struct CoachQuestionView: View {
     @State private var speech = SpeechRecognizer()
     @State private var beforeVoice = ""
     @State private var usedVoice = false
+    @FocusState private var isTextFocused: Bool
 
     var body: some View {
         List {
             Section {
                 TextField("Например: сколько я потратил на кафе в этом месяце?", text: $text, axis: .vertical)
                     .lineLimit(3...8)
+                    .focused($isTextFocused)
                     .disabled(isAsking)
                 HStack {
                     Button {
@@ -51,6 +53,7 @@ struct CoachQuestionView: View {
             }
             if let answer { CoachAnswerSections(answer: answer) }
         }
+        .keyboardDismissal(isFocused: isTextFocused) { isTextFocused = false }
         .navigationTitle("Спросить коуча")
         .onAppear {
             guard !didFill else { return }
@@ -73,6 +76,7 @@ struct CoachQuestionView: View {
     private var trimmed: String { text.trimmingCharacters(in: .whitespacesAndNewlines) }
 
     private func ask() async {
+        isTextFocused = false
         isAsking = true
         errorMessage = nil
         defer { isAsking = false }

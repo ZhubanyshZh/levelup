@@ -23,15 +23,20 @@ struct TaskEditorView: View {
     @State private var goalID: UUID?
     @State private var isSaving = false
     @State private var confirmDelete = false
+    private enum Field: Hashable { case title, notes }
+    @FocusState private var focusedField: Field?
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Что сделать", text: $title, axis: .vertical)
+                    TextField("Что сделать", text: $title)
                         .font(.body.weight(.medium))
+                        .focused($focusedField, equals: .title)
+                        .submitLabel(.done)
                     TextField("Заметка", text: $notes, axis: .vertical)
                         .lineLimit(2...6)
+                        .focused($focusedField, equals: .notes)
                 }
 
                 Section {
@@ -103,6 +108,7 @@ struct TaskEditorView: View {
                     }
                 }
             }
+            .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
             .navigationTitle(task == nil ? "Новая задача" : "Задача")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -110,7 +116,10 @@ struct TaskEditorView: View {
                     Button("Отмена") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Сохранить") { Task { await save() } }
+                    Button("Сохранить") {
+                        focusedField = nil
+                        Task { await save() }
+                    }
                         .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
                 }
             }

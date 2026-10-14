@@ -121,6 +121,8 @@ struct GoalDetailView: View {
     @State private var newValue: Double?
     @State private var isEditing = false
     @State private var confirmDelete = false
+    private enum Field: Hashable { case step, value }
+    @FocusState private var focusedField: Field?
 
     var body: some View {
         if let goal = store.goals.goal(goalID) {
@@ -164,7 +166,9 @@ struct GoalDetailView: View {
                         HStack {
                             TextField("Новое значение", value: $newValue, format: .number)
                                 .keyboardType(.decimalPad)
+                                .focused($focusedField, equals: .value)
                             Button("Обновить") {
+                                focusedField = nil
                                 var updated = goal
                                 updated.currentValue = newValue
                                 newValue = nil
@@ -211,6 +215,8 @@ struct GoalDetailView: View {
                 }
                 HStack {
                     TextField("Новый шаг", text: $newStep)
+                        .focused($focusedField, equals: .step)
+                        .submitLabel(.done)
                         .onSubmit { addStep(goal) }
                     Button {
                         addStep(goal)
@@ -221,14 +227,15 @@ struct GoalDetailView: View {
                 }
             }
 
-            let tasks = store.tasks.tasks.filter { $0.goalId == goal.id }
-            if !tasks.isEmpty {
+            let tasks = store.tasks.goalFeed.query?.filter.goalID == goal.id ? store.tasks.goalFeed.items : []
+            if !tasks.isEmpty || store.tasks.goalFeed.isLoading {
                 Section("Задачи") {
                     ForEach(tasks) { task in
                         TaskRow(task: task) {
                             Task { await store.tasks.toggleDone(task) }
                         }
                     }
+                    TaskPageFooter(feed: store.tasks.goalFeed)
                 }
             }
 
@@ -249,7 +256,13 @@ struct GoalDetailView: View {
                 }
             }
         }
+        .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
         .navigationTitle(goal.title)
+        .task(id: "\(goal.id):\(store.tasks.revision)") {
+            var filter = TaskFilter()
+            filter.goalID = goal.id
+            await store.tasks.goalFeed.reload(TaskPageQuery(filter: filter))
+        }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button("Изменить") { isEditing = true }
@@ -272,7 +285,9 @@ struct GoalDetailView: View {
     }
 
     private func addStep(_ goal: Goal) {
-        let title = newStep
+        focusedField = nil
+        let title = newStep.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !title.isEmpty else { return }
         newStep = ""
         Task { await store.goals.addStep(to: goal, title: title) }
     }
@@ -302,15 +317,20 @@ struct GoalEditorView: View {
     @State private var sphere: String?
     @State private var steps = ""
     @State private var isSaving = false
+    private enum Field: Hashable { case title, why, unit, start, target, steps }
+    @FocusState private var focusedField: Field?
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Чего хочешь добиться", text: $title, axis: .vertical)
+                    TextField("Чего хочешь добиться", text: $title)
                         .font(.body.weight(.medium))
+                        .focused($focusedField, equals: .title)
+                        .submitLabel(.done)
                     TextField("Зачем это тебе", text: $why, axis: .vertical)
                         .lineLimit(2...5)
+                        .focused($focusedField, equals: .why)
                 }
                 Section {
                     Toggle("Срок", isOn: $hasDeadline.animation())
@@ -323,10 +343,14 @@ struct GoalEditorView: View {
                     Toggle("Измеримая цель", isOn: $hasMetric.animation())
                     if hasMetric {
                         TextField("Единица: км, кг, книг…", text: $unit)
+                            .focused($focusedField, equals: .unit)
+                            .submitLabel(.done)
                         TextField("Сейчас", value: $start, format: .number)
                             .keyboardType(.decimalPad)
+                            .focused($focusedField, equals: .start)
                         TextField("Цель", value: $target, format: .number)
                             .keyboardType(.decimalPad)
+                            .focused($focusedField, equals: .target)
                     }
                 } footer: {
                     Text("Без числа прогресс считается по шагам.")
@@ -335,11 +359,13 @@ struct GoalEditorView: View {
                     Section {
                         TextField("По одному на строке", text: $steps, axis: .vertical)
                             .lineLimit(3...8)
+                            .focused($focusedField, equals: .steps)
                     } header: {
                         Text("Шаги")
                     }
                 }
             }
+            .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
             .navigationTitle(goal == nil ? "Новая цель" : "Цель")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -347,7 +373,10 @@ struct GoalEditorView: View {
                     Button("Отмена") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Сохранить") { Task { await save() } }
+                    Button("Сохранить") {
+                        focusedField = nil
+                        Task { await save() }
+                    }
                         .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || isSaving || (hasMetric && target == nil))
                 }
             }

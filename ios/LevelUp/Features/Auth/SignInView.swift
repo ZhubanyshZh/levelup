@@ -1,84 +1,109 @@
-import GoogleSignInSwift
 import SwiftUI
 
 struct SignInView: View {
     @Environment(SessionStore.self) private var session
+    @State private var method: Method?
+
+    private enum Method { case google, guest }
 
     var body: some View {
-        VStack(spacing: 32) {
-            Spacer()
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 32) {
+                    Spacer(minLength: 24)
+                    VStack(spacing: 16) {
+                        Image(systemName: "chevron.up.2")
+                            .font(.system(size: 44, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 96, height: 96)
+                            .background(.tint, in: .rect(cornerRadius: 24))
+                            .accessibilityHidden(true)
+                        Text(verbatim: "Level Up")
+                            .font(.largeTitle.bold())
+                        Text("Задачи, дневник, цели и финансы — голосом, в одном месте.")
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    Spacer(minLength: 24)
 
-            VStack(spacing: 16) {
-                Image(systemName: "chevron.up.2")
-                    .font(.system(size: 44, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 96, height: 96)
-                    .background(.tint, in: .rect(cornerRadius: 24))
-                Text(verbatim: "Level Up")
-                    .font(.largeTitle.bold())
-                Text("Задачи, дневник, цели и финансы — голосом, в одном месте.")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
+                    VStack(spacing: 16) {
+                        Button {
+                            method = .google
+                            Task { await session.signInWithGoogle() }
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image("GoogleLogo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
+                                    .accessibilityHidden(true)
+                                Text("Войти через Google")
+                                    .font(.body.weight(.medium))
+                                if session.isWorking && method == .google {
+                                    ProgressView().tint(Color(red: 0.12, green: 0.12, blue: 0.12))
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                            .frame(maxWidth: .infinity, minHeight: 52)
+                        }
+                        .buttonStyle(GoogleAuthButtonStyle())
+                        .disabled(!GoogleSignInService.isConfigured || session.isWorking)
 
-            Spacer()
+                        if !GoogleSignInService.isConfigured {
+                            Text("Вход через Google временно недоступен.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
 
-            VStack(spacing: 12) {
-                googleButton
+                        Button {
+                            method = .guest
+                            Task { await session.continueWithoutAccount() }
+                        } label: {
+                            HStack(spacing: 12) {
+                                Text("Продолжить без регистрации")
+                                if session.isWorking && method == .guest { ProgressView() }
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 28)
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.large)
+                        .disabled(session.isWorking)
 
-                Button {
-                    Task { await session.continueWithoutAccount() }
-                } label: {
-                    Text("Продолжить без регистрации")
-                        .frame(maxWidth: .infinity)
+                        Text("Данные будут привязаны к этому iPhone. Google можно подключить позже — ничего не потеряется.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+
+                        if let error = session.errorMessage {
+                            Label(error, systemImage: "exclamationmark.circle")
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                                .multilineTextAlignment(.center)
+                        }
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-
-                Text("Данные будут привязаны к этому iPhone. Google можно подключить позже — ничего не потеряется.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-
-                if let error = session.errorMessage {
-                    Text(error)
-                        .font(.footnote)
-                        .foregroundStyle(.red)
-                        .multilineTextAlignment(.center)
-                }
-            }
-            .disabled(session.isWorking)
-            .overlay {
-                if session.isWorking {
-                    ProgressView()
-                }
+                .frame(maxWidth: 440)
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: max(proxy.size.height - 48, 0))
+                .padding(24)
             }
         }
-        .padding(24)
     }
+}
 
-    @ViewBuilder
-    private var googleButton: some View {
-        if GoogleSignInService.isConfigured {
-            GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide)) {
-                Task { await session.signInWithGoogle() }
+/// Официальный цветной знак Google, белая поверхность и внутренний контур.
+private struct GoogleAuthButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundStyle(Color(red: 0.12, green: 0.12, blue: 0.12))
+            .background(configuration.isPressed ? Color(white: 0.95) : .white, in: .rect(cornerRadius: 12))
+            .overlay {
+                RoundedRectangle(cornerRadius: 12)
+                    .strokeBorder(Color(red: 0.45, green: 0.47, blue: 0.46), lineWidth: 1)
             }
-            .frame(height: 50)
-        } else {
-            VStack(spacing: 4) {
-                Button {} label: {
-                    Text("Войти через Google")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .disabled(true)
-                Text("Google-вход не настроен: заполни GOOGLE_CLIENT_ID в ios/Config/Local.xcconfig.")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-        }
+            .opacity(isEnabled ? 1 : 0.5)
     }
 }

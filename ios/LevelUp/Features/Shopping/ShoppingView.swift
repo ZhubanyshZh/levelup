@@ -53,6 +53,7 @@ struct ShoppingView: View {
                 }
             }
         }
+        .keyboardDismissal(isFocused: isAdding) { isAdding = false }
         .overlay {
             if shopping.items.isEmpty {
                 ContentUnavailableView(
@@ -97,9 +98,10 @@ struct ShoppingView: View {
     }
 
     private func add() {
-        let name = newItem
+        isAdding = false
+        let name = newItem.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
         newItem = ""
-        isAdding = true
         Task { await store.shopping.add(name: name) }
     }
 }

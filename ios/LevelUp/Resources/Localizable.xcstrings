@@ -41,6 +41,26 @@
         }
       }
     },
+    "%@, конец": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, end time"
+          }
+        }
+      }
+    },
+    "%@, начало": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, start time"
+          }
+        }
+      }
+    },
     "%lld": {
       "localizations": {
         "en": {
@@ -252,6 +272,7 @@
       }
     },
     "Google-вход не настроен: заполни GOOGLE_CLIENT_ID в ios/Config/Local.xcconfig.": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -387,6 +408,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Free: sign in to Google AI Studio and tap “Create API key”."
+          }
+        }
+      }
+    },
+    "Ближайшие 7 дней": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next 7 days"
           }
         }
       }
@@ -661,6 +692,26 @@
         }
       }
     },
+    "Все сферы": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All spheres"
+          }
+        }
+      }
+    },
+    "Все цели": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All goals"
+          }
+        }
+      }
+    },
     "Всего %lld XP": {
       "localizations": {
         "en": {
@@ -721,6 +772,16 @@
         }
       }
     },
+    "Вход через Google временно недоступен.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google sign-in is temporarily unavailable."
+          }
+        }
+      }
+    },
     "Вход через Google не настроен на сервере.": {
       "localizations": {
         "en": {
@@ -747,6 +808,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yesterday"
+          }
+        }
+      }
+    },
+    "Выбери дни недели и укажи время для каждого дня.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select weekdays and set a time for each day."
           }
         }
       }
@@ -847,6 +918,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "High"
+          }
+        }
+      }
+    },
+    "Высокий приоритет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High priority"
           }
         }
       }
@@ -1381,6 +1462,16 @@
         }
       }
     },
+    "Загрузить ещё": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load more"
+          }
+        }
+      }
+    },
     "Задач пока нет": {
       "localizations": {
         "en": {
@@ -1451,12 +1542,32 @@
         }
       }
     },
+    "Задачи не найдены": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No tasks found"
+          }
+        }
+      }
+    },
     "Задачи, дневник, цели и финансы — голосом, в одном месте.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Tasks, journal, goals and money — by voice, in one place."
+          }
+        }
+      }
+    },
+    "Заканчивается на следующий день.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ends the following day."
           }
         }
       }
@@ -1777,6 +1888,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Workout in progress — continue"
+          }
+        }
+      }
+    },
+    "Измени поисковый запрос или сбрось фильтры.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change your search or reset the filters."
           }
         }
       }
@@ -2131,6 +2252,26 @@
         }
       }
     },
+    "Любой": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Any"
+          }
+        }
+      }
+    },
+    "Любой срок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Any due date"
+          }
+        }
+      }
+    },
     "Машина дел": {
       "localizations": {
         "en": {
@@ -2351,6 +2492,16 @@
         }
       }
     },
+    "Начало и конец должны отличаться.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start and end times must be different."
+          }
+        }
+      }
+    },
     "Начать тренировку": {
       "localizations": {
         "en": {
@@ -2551,6 +2702,16 @@
         }
       }
     },
+    "Низкий приоритет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low priority"
+          }
+        }
+      }
+    },
     "Ничего не добавлено.": {
       "localizations": {
         "en": {
@@ -2727,6 +2888,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Normal"
+          }
+        }
+      }
+    },
+    "Обычный приоритет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal priority"
           }
         }
       }
@@ -3301,6 +3472,26 @@
         }
       }
     },
+    "Поиск по названию и заметке": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search titles and notes"
+          }
+        }
+      }
+    },
+    "Поиск: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search: %@"
+          }
+        }
+      }
+    },
     "Пока ничего": {
       "localizations": {
         "en": {
@@ -3317,6 +3508,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nothing yet"
+          }
+        }
+      }
+    },
+    "Показано задач: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasks shown: %lld"
           }
         }
       }
@@ -3437,6 +3638,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hi, %@!"
+          }
+        }
+      }
+    },
+    "Применить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply"
           }
         }
       }
@@ -3827,6 +4038,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "With reminder"
+          }
+        }
+      }
+    },
+    "Сбросить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
+          }
+        }
+      }
+    },
+    "Сбросить фильтры": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset filters"
           }
         }
       }
@@ -4787,6 +5018,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facts about you: %lld"
+          }
+        }
+      }
+    },
+    "Фильтры": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters"
+          }
+        }
+      }
+    },
+    "Фильтры задач": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Task filters"
+          }
+        }
+      }
+    },
+    "Фильтры работают вместе и применяются к списку и доске.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters combine and apply to both the list and board."
+          }
+        }
+      }
+    },
+    "Фильтры: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters: %lld"
           }
         }
       }

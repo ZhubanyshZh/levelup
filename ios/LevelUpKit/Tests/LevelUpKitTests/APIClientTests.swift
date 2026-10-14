@@ -278,3 +278,97 @@ extension APIClientTests {
         #expect(answer.currency == "KZT")
     }
 }
+
+extension APIClientTests {
+    @Test func taskPageSendsFiltersAndDecodesCursor() async throws {
+        MockURLProtocol.handler = { request in
+            #expect(request.url?.path == "/tasks/page")
+            let values = Dictionary(uniqueKeysWithValues: (URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []).map { ($0.name, $0.value ?? "") })
+            #expect(values["due"] == "today")
+            #expect(values["priority"] == "high")
+            #expect(values["q"] == "Отчёт банк")
+            #expect(values["cursor"] == "cursor+with/slash=")
+            #expect(values["limit"] == "50")
+            return (200, Data("{\"items\":[\(String(decoding: Fixtures.task, as: UTF8.self))],\"next_cursor\":\"next\"}".utf8))
+        }
+        var filter = TaskFilter()
+        filter.due = .today
+        filter.priority = .high
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+        let result = try await client.taskPage(TaskPageQuery(filter: filter, search: "Отчёт банк"), cursor: "cursor+with/slash=")
+        #expect(result.items.count == 1)
+        #expect(result.nextCursor == "next")
+        #expect(result.hasMore)
+    }
+
+    @MainActor @Test func feedAppendsPagesWithoutDuplicatesAndCachesFirstPage() async throws {
+        let other = String(decoding: Fixtures.task, as: UTF8.self).replacingOccurrences(of: "9b2b1d7c-6a0e-4a43-9a52-0f3c7c1f6f10", with: "11111111-1111-1111-1111-111111111111")
+        MockURLProtocol.handler = { request in
+            let second = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems?.contains { $0.name == "cursor" } ?? false
+            let task = String(decoding: Fixtures.task, as: UTF8.self)
+            return (200, Data(second ? "{\"items\":[\(task),\(other)],\"next_cursor\":null}".utf8 : "{\"items\":[\(task)],\"next_cursor\":\"second\"}".utf8))
+        }
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+        let cache = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString).appending(path: "feed.json")
+        defer { try? FileManager.default.removeItem(at: cache.deletingLastPathComponent()) }
+        let feed = TaskFeed(api: client, cacheURL: cache)
+        await feed.reload(TaskPageQuery())
+        #expect(feed.items.count == 1)
+        await feed.loadMore()
+        #expect(feed.items.count == 2)
+        #expect(!feed.hasMore)
+        let reopened = TaskFeed(api: client, cacheURL: cache)
+        #expect(reopened.items.count == 1)
+        #expect(reopened.nextCursor == "second")
+    }
+
+    @MainActor @Test func changedQueryCancelsDebounceAndNeverReusesOldCursor() async throws {
+        MockURLProtocol.handler = { request in
+            let values = Dictionary(uniqueKeysWithValues: (URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []).map { ($0.name, $0.value ?? "") })
+            #expect(values["q"] == "new")
+            #expect(values["cursor"] == nil)
+            return (200, Data(#"{"items":[],"next_cursor":null}"#.utf8))
+        }
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+        let feed = TaskFeed(api: client)
+        let earlier = Task { await feed.reload(TaskPageQuery(search: "old"), debounce: true) }
+        try await Task.sleep(for: .milliseconds(20))
+        earlier.cancel()
+        await feed.reload(TaskPageQuery(search: "new"))
+        await earlier.value
+        #expect(feed.query?.search == "new")
+        #expect(!feed.isLoading)
+        #expect(MockURLProtocol.requestCount(path: "/tasks/page") == 1)
+    }
+
+    @MainActor @Test func paginationErrorRetainsItemsAndCursorForRetry() async throws {
+        MockURLProtocol.handler = { _ in
+            (200, Data("{\"items\":[\(String(decoding: Fixtures.task, as: UTF8.self))],\"next_cursor\":\"retry\"}".utf8))
+        }
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+        let feed = TaskFeed(api: client)
+        await feed.reload(TaskPageQuery())
+        MockURLProtocol.handler = { _ in throw URLError(.notConnectedToInternet) }
+        await feed.loadMore()
+        #expect(feed.items.count == 1)
+        #expect(feed.nextCursor == "retry")
+        #expect(!feed.isLoading)
+    }
+}
+
+extension APIClientTests {
+    @MainActor @Test func expiredCursorReloadsCurrentQueryFromFirstPage() async throws {
+        MockURLProtocol.handler = { request in
+            let cursor = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems?.contains { $0.name == "cursor" } ?? false
+            if cursor { return (422, Data(#"{"detail":"invalid_task_cursor"}"#.utf8)) }
+            return (200, Data("{\"items\":[\(String(decoding: Fixtures.task, as: UTF8.self))],\"next_cursor\":\"cursor\"}".utf8))
+        }
+        let client = makeClient(InMemoryTokenStore(Fixtures.tokens(accessExpiresIn: 3600)))
+        let feed = TaskFeed(api: client)
+        await feed.reload(TaskPageQuery())
+        await feed.loadMore()
+        #expect(MockURLProtocol.requestCount(path: "/tasks/page") == 3)
+        #expect(feed.items.count == 1)
+        #expect(!feed.isLoading)
+    }
+}

@@ -1,4 +1,4 @@
-.PHONY: db api migrate migration test lint format ios ios-open ios-build strings test-kit docker server-env server-setup deploy server-logs server-backup
+.PHONY: db api migrate migration test lint format ios ios-open ios-build strings test-kit docker docker-logs docker-stop server-env server-setup deploy server-logs server-backup
 
 # --- Бэкенд ---
 db:            ## Поднять Postgres в Docker (порт 5433)
@@ -22,8 +22,14 @@ lint:
 format:
 	cd backend && uv run ruff check --fix . && uv run ruff format .
 
-docker:        ## Поднять всё в Docker (db + api)
-	docker compose up --build
+docker:        ## Поднять базу и API в фоне, дождаться готовности (миграции автоматические)
+	docker compose up -d --build --wait --wait-timeout 180
+
+docker-logs:   ## Логи запросов к контейнеру API
+	docker compose logs -f --tail=50 api
+
+docker-stop:   ## Остановить контейнеры; данные базы сохраняются
+	docker compose stop
 
 # --- Сервер на VPS (см. README → «Сервер в интернете») ---
 server-env:    ## Создать deploy/.env с секретами: make server-env IP=1.2.3.4

@@ -3,13 +3,14 @@ name: levelup
 services:
   db:
     image: postgres:17-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: levelup
       POSTGRES_PASSWORD: levelup
       POSTGRES_DB: levelup
     ports:
       # 5432 на этой машине уже занят другим проектом.
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -20,16 +21,27 @@ services:
 
   api:
     build: ./backend
+    restart: unless-stopped
     env_file:
       - path: ./backend/.env
         required: false
     environment:
       DATABASE_URL: postgresql+asyncpg://levelup:levelup@db:5432/levelup
     ports:
-      - "8000:8000"
+      - "0.0.0.0:8000:8000"
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import json, urllib.request; r = json.load(urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)); assert r['status'] == r['database'] == 'ok'"
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 10
 
 volumes:
   db-data:

@@ -126,7 +126,7 @@ final class AppStore {
         guard !isReset else { return }
         let enabled = UserDefaults.standard.bool(forKey: "coachReminders")
         reminders.reservedSlots = enabled ? 15 : 0
-        reminders.sync(tasks.tasks)
+        reminders.sync(tasks.reminderTasks)
         coachReminders.sync(enabled: enabled, facts: profile.facts)
     }
 
@@ -154,7 +154,7 @@ final class AppStore {
         var snapshot = WidgetSnapshot(
             isSignedIn: true,
             displayName: displayName(),
-            tasks: WidgetSnapshot.taskEntries(tasks.tasks, today: today),
+            tasks: WidgetSnapshot.taskEntries(tasks.widgetTasks, today: today),
             shopping: WidgetSnapshot.shoppingEntries(shopping.items),
             journalDays: WidgetSnapshot.journalDays(journal.entries, today: today),
             busy: WidgetSnapshot.busySlots(profile.facts)
@@ -206,6 +206,7 @@ final class AppStore {
         coachReminders.clear()
         UserDefaults.standard.removeObject(forKey: "coachAutomatic")
         UserDefaults.standard.removeObject(forKey: "coachReminders")
+        UserDefaults.standard.removeObject(forKey: "tasksFilter")
         LocalCache<[TaskItem]>.clearAll()
     }
 }

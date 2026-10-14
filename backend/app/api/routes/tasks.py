@@ -1,19 +1,28 @@
 import uuid
+from typing import Annotated
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Query, status
 
 from app.api.deps import DB, CurrentUser
 from app.core.time import utcnow
-from app.schemas.task import TaskCreate, TaskOut, TaskUpdate
+from app.schemas.task import TaskCreate, TaskOut, TaskPage, TaskQuery, TaskUpdate
 from app.services import tasks as task_service
+from app.services.task_query import page_tasks
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
-@router.get("")
-async def list_tasks(user: CurrentUser, db: DB) -> list[TaskOut]:
-    present = await task_service.presenter(db, user)
-    return [present(task) for task in await task_service.list_tasks(db, user.id)]
+@router.get("", deprecated=True)
+async def list_tasks(
+    user: CurrentUser, db: DB, limit: int = Query(50, ge=1, le=100)
+) -> list[TaskOut]:
+    """Совместимость со старым клиентом: всегда ограниченная первая страница."""
+    return (await page_tasks(db, user, TaskQuery(limit=limit))).items
+
+
+@router.get("/page")
+async def task_page(user: CurrentUser, db: DB, query: Annotated[TaskQuery, Query()]) -> TaskPage:
+    return await page_tasks(db, user, query)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)

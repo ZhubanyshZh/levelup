@@ -63,6 +63,7 @@ async def engine() -> AsyncIterator[AsyncEngine]:
     await _ensure_database()
     eng = create_async_engine(TEST_DATABASE_URL)
     async with eng.begin() as conn:
+        await conn.execute(text("CREATE EXTENSION IF NOT EXISTS pg_trgm"))
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     yield eng

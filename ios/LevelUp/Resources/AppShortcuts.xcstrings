@@ -1,106 +1,168 @@
 {
-  "sourceLanguage": "ru",
-  "strings": {
-    "Дневник в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Journal in ${applicationName}"
+  "sourceLanguage" : "ru",
+  "strings" : {
+    "Дневник в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Journal in ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Дневник в ${applicationName}",
+              "Запиши день в ${applicationName}"
+            ]
           }
         }
       }
     },
-    "Добавить в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add something to ${applicationName}"
+    "Добавить в ${applicationName}" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add something to ${applicationName}"
           }
         }
       }
     },
-    "Добавь в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add to ${applicationName}"
+    "Добавь в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add to ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Добавь в ${applicationName}",
+              "Добавить в ${applicationName}"
+            ]
           }
         }
       }
     },
-    "Записать в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Capture in ${applicationName}"
+    "Записать в ${applicationName}" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture in ${applicationName}"
           }
         }
       }
     },
-    "Запиши в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Record in ${applicationName}"
+    "Запиши в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Record in ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Запиши в ${applicationName}",
+              "Записать в ${applicationName}",
+              "Новая запись в ${applicationName}"
+            ]
           }
         }
       }
     },
-    "Запиши день в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log my day in ${applicationName}"
+    "Запиши день в ${applicationName}" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log my day in ${applicationName}"
           }
         }
       }
     },
-    "Запиши трату в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log an expense in ${applicationName}"
+    "Запиши трату в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Log an expense in ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Запиши трату в ${applicationName}"
+            ]
           }
         }
       }
     },
-    "Начни тренировку в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start a workout in ${applicationName}"
+    "Начни тренировку в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Start a workout in ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Начни тренировку в ${applicationName}"
+            ]
           }
         }
       }
     },
-    "Новая запись в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New entry in ${applicationName}"
+    "Новая запись в ${applicationName}" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New entry in ${applicationName}"
           }
         }
       }
     },
-    "Отмени последнюю запись в ${applicationName}": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Undo last entry in ${applicationName}"
+    "Отмени последнюю запись в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Undo last entry in ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Отмени последнюю запись в ${applicationName}"
+            ]
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

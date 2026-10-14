@@ -1,10 +1,9 @@
 import uuid
 from collections.abc import Callable, Sequence
-from datetime import date, timedelta
+from datetime import date
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import AppError
@@ -20,20 +19,6 @@ from app.services.schedule import compute_remind_at, upcoming_reminders
 DONE_VISIBLE_DAYS = 30
 
 TaskPresenter = Callable[[Task], TaskOut]
-
-
-async def list_tasks(db: AsyncSession, user_id: uuid.UUID) -> list[Task]:
-    cutoff = utcnow() - timedelta(days=DONE_VISIBLE_DAYS)
-    rows = await db.scalars(
-        select(Task)
-        .where(
-            Task.user_id == user_id,
-            Task.deleted_at.is_(None),
-            or_(Task.status != "done", Task.completed_at >= cutoff),
-        )
-        .order_by(Task.position, Task.created_at)
-    )
-    return list(rows)
 
 
 async def get_task(db: AsyncSession, user_id: uuid.UUID, task_id: uuid.UUID) -> Task:

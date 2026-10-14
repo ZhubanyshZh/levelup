@@ -144,7 +144,7 @@ struct ActiveWorkoutView: View {
     @State private var showsMore = false
     @State private var isFinishing = false
     @State private var confirmCancel = false
-    @FocusState private var exerciseFocused: Bool
+    @FocusState private var focusedField: WorkoutInputField?
 
     var body: some View {
         let workouts = store.workouts
@@ -186,23 +186,24 @@ struct ActiveWorkoutView: View {
 
             Section {
                 TextField("Упражнение", text: $exercise)
-                    .focused($exerciseFocused)
+                    .focused($focusedField, equals: .exercise)
                     .textInputAutocapitalization(.sentences)
+                    .submitLabel(.done)
                     .onSubmit(selectExercise)
-                if exerciseFocused || exercise.isEmpty {
+                if focusedField == .exercise || exercise.isEmpty {
                     SuggestionStrip(names: suggestions) { name in
                         exercise = name
                         selectExercise()
                     }
                 }
                 HStack {
-                    NumberField("Вес, кг", value: $weight)
-                    NumberField("Повторы", value: Binding(get: { reps.map(Double.init) }, set: { reps = $0.map { Int($0) } }))
+                    NumberField("Вес, кг", value: $weight, focus: $focusedField, field: .weight)
+                    NumberField("Повторы", value: Binding(get: { reps.map(Double.init) }, set: { reps = $0.map { Int($0) } }), focus: $focusedField, field: .reps)
                 }
                 if showsMore {
                     HStack {
-                        NumberField("Минуты", value: Binding(get: { minutes.map(Double.init) }, set: { minutes = $0.map { Int($0) } }))
-                        NumberField("Км", value: $kilometers)
+                        NumberField("Минуты", value: Binding(get: { minutes.map(Double.init) }, set: { minutes = $0.map { Int($0) } }), focus: $focusedField, field: .minutes)
+                        NumberField("Км", value: $kilometers, focus: $focusedField, field: .kilometers)
                     }
                 } else {
                     Button("Время или дистанция") { showsMore = true }
@@ -245,6 +246,7 @@ struct ActiveWorkoutView: View {
                 Text("Таймер отдыха виден на экране блокировки, а по окончании придёт уведомление.")
             }
         }
+        .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
         .navigationTitle(active.title ?? String(localized: "Тренировка"))
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -287,7 +289,7 @@ struct ActiveWorkoutView: View {
     }
 
     private func selectExercise() {
-        exerciseFocused = false
+        focusedField = nil
         store.workouts.select(exercise: exercise)
         prefill()
     }
@@ -303,6 +305,7 @@ struct ActiveWorkoutView: View {
     }
 
     private func addSet() {
+        focusedField = nil
         let name = exercise.trimmingCharacters(in: .whitespacesAndNewlines)
         store.workouts.add(SetInput(
             exercise: name,
@@ -314,6 +317,7 @@ struct ActiveWorkoutView: View {
     }
 
     private func finish() async {
+        focusedField = nil
         isFinishing = true
         defer { isFinishing = false }
         let hadSets = !(store.workouts.active?.sets.isEmpty ?? true)
@@ -323,13 +327,21 @@ struct ActiveWorkoutView: View {
     }
 }
 
+private enum WorkoutInputField: Hashable {
+    case exercise, weight, reps, minutes, kilometers
+}
+
 private struct NumberField: View {
     let title: LocalizedStringKey
     @Binding var value: Double?
+    var focus: FocusState<WorkoutInputField?>.Binding
+    let field: WorkoutInputField
 
-    init(_ title: LocalizedStringKey, value: Binding<Double?>) {
+    init(_ title: LocalizedStringKey, value: Binding<Double?>, focus: FocusState<WorkoutInputField?>.Binding, field: WorkoutInputField) {
         self.title = title
         _value = value
+        self.focus = focus
+        self.field = field
     }
 
     var body: some View {
@@ -337,6 +349,7 @@ private struct NumberField: View {
             .keyboardType(.decimalPad)
             .textFieldStyle(.roundedBorder)
             .monospacedDigit()
+            .focused(focus, equals: field)
     }
 }
 
@@ -497,6 +510,10 @@ private struct WorkoutEditorView: View {
     @State private var note: String
     @State private var sets: [EditableWorkoutSet]
     @State private var isSaving = false
+    private enum Field: Hashable {
+        case title, note, exercise(UUID), weight(UUID), reps(UUID), duration(UUID), distance(UUID)
+    }
+    @FocusState private var focusedField: Field?
 
     init(workout: Workout) {
         self.workout = workout
@@ -516,29 +533,38 @@ private struct WorkoutEditorView: View {
             Form {
                 Section {
                     TextField("Название", text: $title)
+                        .focused($focusedField, equals: .title)
+                        .submitLabel(.done)
                     DatePicker("Дата", selection: $date, displayedComponents: .date)
                     TextField("Заметка", text: $note, axis: .vertical)
+                        .focused($focusedField, equals: .note)
                 }
                 ForEach($sets) { $set in
                     Section {
                         TextField("Упражнение", text: $set.input.exercise)
+                            .focused($focusedField, equals: .exercise(set.id))
+                            .submitLabel(.done)
                         LabeledContent("Вес, кг") {
                             TextField("—", value: $set.input.weightKg, format: .number)
+                                .focused($focusedField, equals: .weight(set.id))
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         LabeledContent("Повторы") {
                             TextField("—", value: $set.input.reps, format: .number)
+                                .focused($focusedField, equals: .reps(set.id))
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         LabeledContent("Время, с") {
                             TextField("—", value: $set.input.durationSec, format: .number)
+                                .focused($focusedField, equals: .duration(set.id))
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         LabeledContent("Дистанция, м") {
                             TextField("—", value: $set.input.distanceM, format: .number)
+                                .focused($focusedField, equals: .distance(set.id))
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                         }
@@ -559,6 +585,7 @@ private struct WorkoutEditorView: View {
                     .disabled(sets.count >= 300)
                 }
             }
+            .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
             .disabled(isSaving)
             .navigationTitle("Изменить тренировку")
             .navigationBarTitleDisplayMode(.inline)
@@ -568,7 +595,10 @@ private struct WorkoutEditorView: View {
                         .disabled(isSaving)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Сохранить") { Task { await save() } }
+                    Button("Сохранить") {
+                        focusedField = nil
+                        Task { await save() }
+                    }
                         .disabled(isSaving || sets.isEmpty || !sets.allSatisfy { isValid($0.input) } || title.count > 100 || note.count > 4000)
                 }
             }

@@ -6,6 +6,18 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from app.schemas.common import HHMM_PATTERN, FactCategory, Weekday
 
 
+class DayInterval(BaseModel):
+    weekday: Weekday
+    start: str = Field(pattern=HHMM_PATTERN)
+    end: str = Field(pattern=HHMM_PATTERN)
+
+    @model_validator(mode="after")
+    def _check_interval(self) -> "DayInterval":
+        if self.start == self.end:
+            raise ValueError("start and end must differ")
+        return self
+
+
 class ScheduleData(BaseModel):
     """Регулярное время. Если end раньше start — интервал переходит через полночь (сон)."""
 
@@ -13,13 +25,27 @@ class ScheduleData(BaseModel):
     start: str = Field(pattern=HHMM_PATTERN)
     end: str = Field(pattern=HHMM_PATTERN)
     busy: bool = True
+    day_intervals: list[DayInterval] = Field(default_factory=list, max_length=7)
 
     @model_validator(mode="after")
     def _check_interval(self) -> "ScheduleData":
         if self.start == self.end:
             raise ValueError("start and end must differ")
         self.weekdays = sorted(set(self.weekdays), key=_weekday_order)
+        days = [interval.weekday for interval in self.day_intervals]
+        if len(days) != len(set(days)):
+            raise ValueError("day intervals must have unique weekdays")
+        if not set(days).issubset(self.weekdays):
+            raise ValueError("day intervals must belong to selected weekdays")
+        self.day_intervals.sort(key=lambda interval: _weekday_order(interval.weekday))
         return self
+
+    def intervals(self) -> list[DayInterval]:
+        overrides = {interval.weekday: interval for interval in self.day_intervals}
+        return [
+            overrides.get(day) or DayInterval(weekday=day, start=self.start, end=self.end)
+            for day in self.weekdays
+        ]
 
 
 def _weekday_order(day: str) -> int:

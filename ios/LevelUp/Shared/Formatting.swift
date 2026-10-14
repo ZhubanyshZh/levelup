@@ -70,6 +70,12 @@ extension TaskPriority {
 }
 
 extension Weekday {
+    var title: String {
+        let monday = LocalDate(year: 2026, month: 10, day: 5)
+        let index = Weekday.allCases.firstIndex(of: self) ?? 0
+        return monday.adding(days: index).date().formatted(.dateTime.weekday(.wide))
+    }
+
     var shortTitle: String {
         // 2026-10-05 — понедельник; от него отсчитываем дни недели в языке устройства.
         let monday = LocalDate(year: 2026, month: 10, day: 5)
@@ -80,11 +86,15 @@ extension Weekday {
 
 extension Schedule {
     var summary: String {
+        let intervals = weekdays.sorted().map { interval(on: $0) }
+        let busyText = busy ? " · " + String(localized: "занят") : ""
+        if let first = intervals.first, intervals.contains(where: { $0.start != first.start || $0.end != first.end }) {
+            return intervals.map { "\($0.weekday.shortTitle) \($0.start)–\($0.end)" }.joined(separator: " · ") + busyText
+        }
         let days = weekdays.count == 7
             ? String(localized: "Каждый день")
             : weekdays.sorted().map(\.shortTitle).joined(separator: ", ")
-        let busyText = busy ? " · " + String(localized: "занят") : ""
-        return "\(days) \(start)–\(end)\(busyText)"
+        return "\(days) \(intervals.first?.start ?? start)–\(intervals.first?.end ?? end)\(busyText)"
     }
 }
 

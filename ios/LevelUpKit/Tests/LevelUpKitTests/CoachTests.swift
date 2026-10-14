@@ -72,4 +72,16 @@ struct CoachTests {
             #expect(AppRoute(url: AppRoute.coach(kind).url) == .coach(kind))
         }
     }
+
+    @Test func remindersRespectIndividualDaysIncludingOvernightOverrides() {
+        let schedule = Schedule(weekdays: [.sun, .mon], start: "23:00", end: "10:00", dayIntervals: [
+            DayInterval(weekday: .mon, start: "23:00", end: "11:00")
+        ])
+        let events = CoachReminderPlan.events(now: date("2026-10-12T02:00:00Z"), schedules: [schedule], calendar: calendar)
+        let mornings = events.filter { $0.kind == .morning }
+        let monday = mornings.first { LocalDate($0.date, calendar: calendar).weekday == .mon }!
+        let tuesday = mornings.first { LocalDate($0.date, calendar: calendar).weekday == .tue }!
+        #expect(calendar.component(.hour, from: monday.date) == 10)
+        #expect(calendar.component(.hour, from: tuesday.date) == 11)
+    }
 }

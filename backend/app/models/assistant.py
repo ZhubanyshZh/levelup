@@ -2,7 +2,18 @@ import uuid
 from datetime import date, datetime, time
 from typing import Any
 
-from sqlalchemy import Boolean, Float, ForeignKey, SmallInteger, String, Text, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    Float,
+    ForeignKey,
+    Index,
+    SmallInteger,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+    literal_column,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -95,3 +106,75 @@ class Task(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
     capture_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("captures.id", ondelete="SET NULL")
     )
+
+
+# Те же выражения используются в ORDER BY, курсорах и индексах.
+def task_state_key():
+    return literal_column("(CASE WHEN status = 'done' THEN 1 ELSE 0 END)")
+
+
+def task_due_key():
+    return func.coalesce(Task.due_date, literal_column("DATE 'infinity'"))
+
+
+def task_time_key():
+    return func.coalesce(Task.due_time, literal_column("TIME '23:59:59'"))
+
+
+def task_search_key():
+    return func.lower(
+        Task.title + literal_column("' '") + func.coalesce(Task.notes, literal_column("''"))
+    )
+
+
+_live_tasks = Task.deleted_at.is_(None)
+Index(
+    "ix_tasks_live_due",
+    Task.user_id,
+    task_state_key(),
+    task_due_key(),
+    task_time_key(),
+    Task.position,
+    Task.id,
+    postgresql_where=_live_tasks,
+)
+Index("ix_tasks_live_date", Task.user_id, Task.due_date, postgresql_where=_live_tasks)
+Index(
+    "ix_tasks_live_status_position",
+    Task.user_id,
+    Task.status,
+    Task.position,
+    Task.id,
+    postgresql_where=_live_tasks,
+)
+Index("ix_tasks_live_priority", Task.user_id, Task.priority, postgresql_where=_live_tasks)
+Index("ix_tasks_live_sphere", Task.user_id, Task.sphere, postgresql_where=_live_tasks)
+Index(
+    "ix_tasks_open_due",
+    Task.user_id,
+    task_state_key(),
+    task_due_key(),
+    task_time_key(),
+    Task.position,
+    Task.id,
+    postgresql_where=_live_tasks & (Task.status != "done"),
+)
+Index(
+    "ix_tasks_done_completed",
+    Task.user_id,
+    Task.completed_at,
+    postgresql_where=_live_tasks & (Task.status == "done"),
+)
+Index(
+    "ix_tasks_reminder_date",
+    Task.user_id,
+    Task.due_date,
+    postgresql_where=_live_tasks & Task.remind.is_(True) & (Task.status != "done"),
+)
+Index(
+    "ix_tasks_live_search",
+    task_search_key().label("search_text"),
+    postgresql_using="gin",
+    postgresql_ops={"search_text": "gin_trgm_ops"},
+    postgresql_where=_live_tasks,
+)

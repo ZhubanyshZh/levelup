@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime, time
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, field_validator
 
 from app.schemas.common import HHMM_PATTERN, Priority, TaskStatus, Weekday, format_hhmm
 
@@ -26,7 +26,7 @@ class TaskCreate(BaseModel):
     remind: bool = False
     difficulty: int | None = Field(default=None, ge=1, le=5)
     recurrence: Recurrence | None = None
-    position: float | None = None
+    position: FiniteFloat | None = None
     sphere: str | None = Field(default=None, max_length=40)
     goal_id: uuid.UUID | None = None
 
@@ -43,7 +43,7 @@ class TaskUpdate(BaseModel):
     remind: bool | None = None
     difficulty: int | None = Field(default=None, ge=1, le=5)
     recurrence: Recurrence | None = None
-    position: float | None = None
+    position: FiniteFloat | None = None
     sphere: str | None = Field(default=None, max_length=40)
     goal_id: uuid.UUID | None = None
 
@@ -77,3 +77,28 @@ class TaskOut(BaseModel):
     @classmethod
     def _format_time(cls, value: object) -> object:
         return format_hhmm(value) if isinstance(value, time) else value
+
+
+class TaskQuery(BaseModel):
+    """Фильтры исполняются в SQL; limit ограничивает любую выдачу."""
+
+    due: Literal["any", "overdue", "today", "tomorrow", "nextSevenDays", "noDate"] = "any"
+    priority: Priority | None = None
+    sphere: str | None = Field(default=None, max_length=40)
+    goal_id: uuid.UUID | None = None
+    status: TaskStatus | None = None
+    q: str = Field(default="", max_length=200)
+    view: Literal["all", "today", "widgets", "reminders"] = "all"
+    sort: Literal["due", "position"] = "due"
+    limit: int = Field(default=50, ge=1, le=100)
+    cursor: str | None = Field(default=None, max_length=2048)
+
+    @field_validator("q")
+    @classmethod
+    def _normalize_query(cls, value: str) -> str:
+        return " ".join(value.split())
+
+
+class TaskPage(BaseModel):
+    items: list[TaskOut]
+    next_cursor: str | None = None

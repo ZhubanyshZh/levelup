@@ -114,7 +114,9 @@ struct TodayView: View {
                 }
 
                 Section("Сегодня") {
-                    if tasks.today.isEmpty {
+                    if tasks.today.isEmpty && tasks.todayFeed.isLoading {
+                        ProgressView()
+                    } else if tasks.today.isEmpty {
                         Button(action: onCapture) {
                             Label("На сегодня ничего. Нажми, чтобы записать дела голосом.", systemImage: "mic")
                                 .foregroundStyle(.secondary)
@@ -127,6 +129,7 @@ struct TodayView: View {
                             .onTapGesture { editing = task }
                         }
                     }
+                    TaskPageFooter(feed: tasks.todayFeed)
                 }
             }
             .navigationTitle(greeting)

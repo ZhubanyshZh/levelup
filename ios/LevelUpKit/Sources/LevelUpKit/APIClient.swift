@@ -52,8 +52,8 @@ public actor APIClient {
 
     // MARK: Задачи
 
-    public func tasks() async throws -> [TaskItem] {
-        try await sendAuthorized(Request(method: "GET", path: "tasks"))
+    public func taskPage(_ query: TaskPageQuery = TaskPageQuery(), cursor: String? = nil, limit: Int = 50) async throws -> TaskPage {
+        try await sendAuthorized(Request(method: "GET", path: "tasks/page", query: query.parameters(cursor: cursor, limit: limit)))
     }
 
     public func createTask(_ draft: TaskDraft) async throws -> TaskItem {

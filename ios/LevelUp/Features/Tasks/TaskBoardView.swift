@@ -3,6 +3,8 @@ import SwiftUI
 
 /// Канбан: три колонки, карточки перетаскиваются между ними.
 struct TaskBoardView: View {
+    let filter: TaskFilter
+    let search: String
     let onOpen: (TaskItem) -> Void
     @Environment(AppStore.self) private var store
 
@@ -11,7 +13,7 @@ struct TaskBoardView: View {
             ScrollView(.horizontal) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(TaskStatus.allCases, id: \.self) { status in
-                        BoardColumn(status: status, onOpen: onOpen)
+                        BoardColumn(status: status, feed: store.tasks.boardFeed(status), expectedQuery: TaskPageQuery(filter: filter, search: search, status: status, sort: .position), onOpen: onOpen)
                             .frame(height: max(proxy.size.height - 24, 200))
                     }
                 }
@@ -27,18 +29,21 @@ struct TaskBoardView: View {
 
 private struct BoardColumn: View {
     let status: TaskStatus
+    let feed: TaskFeed
+    let expectedQuery: TaskPageQuery
     let onOpen: (TaskItem) -> Void
     @Environment(AppStore.self) private var store
     @State private var isTargeted = false
 
     var body: some View {
-        let tasks = store.tasks.tasks(in: status)
+        let matchesQuery = feed.query == expectedQuery
+        let tasks = matchesQuery ? feed.items : []
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Label(status.title, systemImage: status.symbol)
                     .font(.headline)
                 Spacer()
-                Text(tasks.count, format: .number)
+                Text(verbatim: "\(tasks.count)\(feed.hasMore ? "+" : "")")
                     .font(.subheadline.monospacedDigit())
                     .foregroundStyle(.secondary)
             }
@@ -54,14 +59,16 @@ private struct BoardColumn: View {
                             }
                             .contextMenu { menu(for: task) }
                     }
-                    if tasks.isEmpty {
-                        Text("Перетащи сюда карточку")
+                    if matchesQuery { TaskPageFooter(feed: feed) } else { ProgressView() }
+                    if tasks.isEmpty && matchesQuery && !feed.isLoading {
+                        Text(expectedQuery.filter.activeCount > 0 || !expectedQuery.search.isEmpty ? "Задачи не найдены" : "Перетащи сюда карточку")
                             .font(.footnote)
                             .foregroundStyle(.tertiary)
                             .frame(maxWidth: .infinity, minHeight: 80)
                     }
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
         }
         .padding(10)
         .frame(width: 280)

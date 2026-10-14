@@ -4,6 +4,7 @@ import SwiftUI
 /// Карточка одной записи в предпросмотре. Всё, что понял ИИ, можно поправить.
 struct CaptureItemCard: View {
     @Binding var item: CaptureItem
+    @FocusState private var isTitleFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -33,6 +34,7 @@ struct CaptureItemCard: View {
 
             TextField("Название", text: $item.title, axis: .vertical)
                 .font(.body.weight(.medium))
+                .focused($isTitleFocused)
 
             if let details = item.details {
                 Text(details)
@@ -88,6 +90,7 @@ struct CaptureItemCard: View {
                 }
             }
         }
+        .keyboardDismissal(isFocused: isTitleFocused) { isTitleFocused = false }
         .opacity(item.include ? 1 : 0.45)
         .animation(.default, value: item.include)
     }
@@ -238,6 +241,7 @@ private struct ShoppingFields: View {
 }
 
 private struct MoneyFields: View {
+    @FocusState private var isAmountFocused: Bool
     @Binding var item: CaptureItem
     @Environment(AppStore.self) private var store
 
@@ -251,6 +255,7 @@ private struct MoneyFields: View {
                 TextField("Сумма", value: $item.amount, format: .number)
                     .keyboardType(.decimalPad)
                     .font(.title3.bold())
+                    .focused($isAmountFocused)
                 Text(verbatim: item.currency ?? store.finance.summary?.currency ?? "KZT")
                     .foregroundStyle(.secondary)
             }
@@ -274,6 +279,7 @@ private struct MoneyFields: View {
                     .foregroundStyle(.orange)
             }
         }
+        .keyboardDismissal(isFocused: isAmountFocused) { isAmountFocused = false }
     }
 }
 

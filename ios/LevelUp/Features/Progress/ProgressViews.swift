@@ -235,6 +235,8 @@ struct SpheresEditorView: View {
     @State private var newIcon = "⭐"
     @State private var renaming: Sphere?
     @State private var renameText = ""
+    private enum Field: Hashable { case icon, name }
+    @FocusState private var focusedField: Field?
 
     var body: some View {
         NavigationStack {
@@ -266,17 +268,18 @@ struct SpheresEditorView: View {
                     HStack {
                         TextField("⭐", text: $newIcon)
                             .frame(width: 44)
+                            .focused($focusedField, equals: .icon)
+                            .submitLabel(.done)
                         TextField("Название", text: $newName)
-                        Button("Добавить") {
-                            let name = newName
-                            let icon = newIcon
-                            newName = ""
-                            Task { await store.progress.createSphere(name: name, icon: icon) }
-                        }
+                            .focused($focusedField, equals: .name)
+                            .submitLabel(.done)
+                            .onSubmit(addSphere)
+                        Button("Добавить", action: addSphere)
                         .disabled(newName.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
                 }
             }
+            .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
             .navigationTitle("Сферы жизни")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -293,6 +296,15 @@ struct SpheresEditorView: View {
                 Button("Отмена", role: .cancel) { renaming = nil }
             }
         }
+    }
+
+    private func addSphere() {
+        focusedField = nil
+        let name = newName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
+        let icon = newIcon
+        newName = ""
+        Task { await store.progress.createSphere(name: name, icon: icon) }
     }
 }
 

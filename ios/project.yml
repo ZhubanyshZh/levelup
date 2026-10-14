@@ -68,6 +68,9 @@ targets:
         NSSpeechRecognitionUsageDescription: Распознавание речи превращает твой голос в текст записи.
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
+          NSExceptionDomains:
+            "192.168.0.54":
+              NSExceptionAllowsInsecureHTTPLoads: true
         # Live Activity тренировки: упражнение и таймер отдыха на экране блокировки.
         NSSupportsLiveActivities: true
     entitlements:
@@ -98,6 +101,12 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LUAPIBaseURL: $(API_BASE_URL)
         LUAppGroupID: $(APP_GROUP_ID)
+        NSLocalNetworkUsageDescription: Level Up подключается к серверу разработки в локальной сети.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+          NSExceptionDomains:
+            "192.168.0.54":
+              NSExceptionAllowsInsecureHTTPLoads: true
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:

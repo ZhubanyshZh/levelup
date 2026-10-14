@@ -24,10 +24,25 @@
 	<string>$(API_BASE_URL)</string>
 	<key>LUAppGroupID</key>
 	<string>$(APP_GROUP_ID)</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>192.168.0.54</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Level Up подключается к серверу разработки в локальной сети.</string>
 </dict>
 </plist>

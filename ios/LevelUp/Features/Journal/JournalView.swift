@@ -150,6 +150,8 @@ struct JournalEditorView: View {
     @State private var tags = ""
     @State private var isSaving = false
     @State private var confirmDelete = false
+    private enum Field: Hashable { case text, tags }
+    @FocusState private var focusedField: Field?
 
     var body: some View {
         NavigationStack {
@@ -164,6 +166,7 @@ struct JournalEditorView: View {
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $text)
                             .frame(minHeight: 160)
+                            .focused($focusedField, equals: .text)
                         if text.isEmpty {
                             Text("Что было сегодня? Что получилось, что нет, что чувствуешь?")
                                 .foregroundStyle(.tertiary)
@@ -182,6 +185,8 @@ struct JournalEditorView: View {
                 Section {
                     TextField("работа, спорт, семья", text: $tags)
                         .textInputAutocapitalization(.never)
+                        .focused($focusedField, equals: .tags)
+                        .submitLabel(.done)
                 } header: {
                     Text("Теги")
                 } footer: {
@@ -193,6 +198,7 @@ struct JournalEditorView: View {
                     }
                 }
             }
+            .keyboardDismissal(isFocused: focusedField != nil) { focusedField = nil }
             .navigationTitle(entry == nil ? "Новая запись" : "Запись")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -227,6 +233,7 @@ struct JournalEditorView: View {
     }
 
     private func save() async {
+        focusedField = nil
         isSaving = true
         defer { isSaving = false }
         let input = JournalInput(

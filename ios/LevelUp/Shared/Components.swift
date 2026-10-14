@@ -124,13 +124,31 @@ struct WeekdayPicker: View {
                 } label: {
                     Text(day.shortTitle)
                         .font(.footnote.weight(.medium))
-                        .frame(maxWidth: .infinity, minHeight: 34)
+                        .frame(maxWidth: .infinity, minHeight: 44)
                         .background(isOn ? AnyShapeStyle(.tint) : AnyShapeStyle(.fill.tertiary), in: .rect(cornerRadius: 8))
                         .foregroundStyle(isOn ? .white : .primary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(Text(verbatim: day.title))
+                .accessibilityAddTraits(isOn ? .isSelected : [])
             }
         }
+    }
+}
+
+extension View {
+    /// Return закрывает однострочный ввод; «Готово» доступно и на цифровой клавиатуре.
+    func keyboardDismissal(isFocused: Bool, dismiss: @escaping () -> Void) -> some View {
+        scrollDismissesKeyboard(.interactively)
+            .onSubmit(dismiss)
+            .toolbar {
+                if isFocused {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Готово", action: dismiss)
+                    }
+                }
+            }
     }
 }
 
